@@ -1,0 +1,43 @@
+
+{% extends "layout.html" %}
+
+{% block title %}Inventory{% endblock %}
+
+{% block content %}
+    <h2>Current Inventory ({{ inventory|length }} Cars)</h2>
+    
+    {% if inventory %}
+        <table class="inventory-table">
+            <thead>
+                <tr>
+                    <th>VIN</th>
+                    <th>Year</th>
+                    <th>Make</th>
+                    <th>Model</th>
+                    <th>Price</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for car in inventory %}
+                <tr>
+                    <td>{{ car.vin }}</td>
+                    <td>{{ car.year }}</td>
+                    <td>{{ car.make }}</td>
+                    <td>{{ car.model }}</td>
+                    <td>${{ "{:,.2f}".format(car.price) }}</td>
+                    <td>
+                        <a href="{{ url_for('sell_car_route', vin=car.vin) }}" class="btn btn-sell" 
+                           onclick="return confirm('Are you sure you want to sell this car?');">
+                           Sell
+                        </a>
+                        </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="empty-inventory">The dealership inventory is currently empty. Start by adding a car!</p>
+    {% endif %}
+
+{% endblock %}
