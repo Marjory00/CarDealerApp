@@ -1,0 +1,12 @@
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# IDE/Editor files
+.vscode/ # VS Code configuration (optional, depends on preference)
+.DS_Store # macOS files
+
+# Data files we might want to keep private or auto-generate
+cars.json # Ignoring the data file so it doesn't pollute the repository with test data
