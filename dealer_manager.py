@@ -2,29 +2,30 @@
 
 import json
 import os
-from datetime import datetime # Import for sales date logging
+from datetime import datetime
 from car import Car 
+from typing import List, Dict, Any, Optional
 
 # Define the data file paths
 DATA_FILE = 'cars.json'
-SALES_FILE = 'sales.json' # NEW: File for sales history
+SALES_FILE = 'sales.json' 
 
 class DealerManager:
     """
     Manages the core inventory and sales operations, including loading, saving,
-    adding, removing, and searching for cars.
+    adding, removing, and searching for cars, and handling image_url data.
     """
 
-    def __init__(self, file_path=DATA_FILE, sales_file=SALES_FILE):
+    def __init__(self, file_path: str = DATA_FILE, sales_file: str = SALES_FILE):
         """Initializes the manager, setting up file paths and loading data."""
         self.file_path = file_path
         self.sales_file = sales_file
-        self.inventory = []
-        self.sales_history = [] # NEW: Stores records of cars sold
+        self.inventory: List[Car] = []
+        self.sales_history: List[Dict[str, Any]] = [] 
         self._load_data()
-        self._load_sales_history() # NEW: Load sales data
+        self._load_sales_history()
 
-    # --- Data Persistence Methods ---
+    # ------------------ Data Persistence Methods ------------------
 
     def _load_data(self):
         """Loads car data from the inventory JSON file and recreates Car objects."""
@@ -34,64 +35,59 @@ class DealerManager:
                     data = json.load(f)
                     for car_data in data:
                         try:
-                            # Recreate Car objects using its __init__ (which should include validation)
+                            # Recreate Car objects using its attributes (safely handles image_url)
                             self.inventory.append(Car(**car_data))
                         except (TypeError, ValueError) as e:
-                            # Catch validation/structure errors when loading old data
                             print(f"Skipping corrupt car entry in JSON: {car_data}. Error: {e}")
-                print(f"Inventory loaded successfully from {self.file_path}.")
             except (IOError, json.JSONDecodeError):
                 print("Could not read or parse inventory file. Starting with empty inventory.")
-        else:
-            print("Inventory file not found. Starting with empty inventory.")
 
     def _load_sales_history(self):
-        """NEW: Loads sales data from the sales JSON file."""
+        """Loads sales data from the sales JSON file."""
         if os.path.exists(self.sales_file):
             try:
                 with open(self.sales_file, 'r') as f:
                     self.sales_history = json.load(f)
-                print(f"Sales history loaded successfully from {self.sales_file}.")
             except (IOError, json.JSONDecodeError):
                 print("Could not read or parse sales file. Starting with empty sales history.")
-        else:
-            print("Sales file not found. Starting with empty sales history.")
 
-    def save_data(self):
-        """Saves the current inventory to the JSON file."""
-        data = [car.to_dict() for car in self.inventory]
+    def save_data(self) -> bool:
+        """Saves the current inventory to the JSON file. Returns True/False for success."""
+        data = [car.to_dict() for car in self.inventory] 
         try:
             with open(self.file_path, 'w') as f:
                 json.dump(data, f, indent=4)
             print(f"Inventory successfully saved to {self.file_path}.")
+            return True
         except IOError:
-            print("Error: Could not write to inventory data file.")
+            print("CRITICAL ERROR: Could not write to inventory data file. Data is not saved.")
+            return False
     
-    def save_sales_history(self):
-        """NEW: Saves the current sales history to the sales JSON file."""
+    def save_sales_history(self) -> bool:
+        """Saves the current sales history to the sales JSON file. Returns True/False for success."""
         try:
             with open(self.sales_file, 'w') as f:
                 json.dump(self.sales_history, f, indent=4)
             print(f"Sales history successfully saved to {self.sales_file}.")
+            return True
         except IOError:
-            print("Error: Could not write to sales history file.")
+            print("CRITICAL ERROR: Could not write to sales history file. Data is not saved.")
+            return False
 
-    # --- Inventory Management Methods ---
+    # ------------------ Inventory Management Methods ------------------
 
-    def find_car_by_vin(self, vin):
+    def find_car_by_vin(self, vin: str) -> Optional[Car]:
         """Helper method to find a car object by its VIN (case-insensitive)."""
         vin = vin.strip().upper()
+        # Returns the Car object or None if not found
         return next((car for car in self.inventory if car.vin == vin), None)
 
-    def add_car(self, car):
-        """Adds a new Car object to the inventory after checking for duplicates.
-        NOTE: Relies on Car object already being validated by Car.__init__."""
-        
-        # REMOVED redundant VIN validation (assumed done by Car.__init__)
+    # Alias for clarity when retrieving a car object in the UI
+    get_car_by_vin = find_car_by_vin
 
-        # Check for duplicate VIN
+    def add_car(self, car: Car) -> bool:
+        """Adds a new Car object to the inventory after checking for duplicates."""
         if self.find_car_by_vin(car.vin):
-            # Error message for application/CLI level display
             print(f"Error: Car with VIN {car.vin} already exists.")
             return False
         
@@ -99,27 +95,28 @@ class DealerManager:
         print(f"Added: {car.make} {car.model}")
         return True
     
-    def edit_car(self, vin, new_price=None, new_year=None):
-        """Updates the price and/or year of an existing car by VIN.
-        Uses Car.__init__ for validation by creating a temporary Car object."""
+    def edit_car(self, vin: str, new_price: Optional[float] = None, new_year: Optional[int] = None) -> bool:
+        """Updates the price and/or year of an existing car by VIN."""
         car = self.find_car_by_vin(vin)
         
         if not car:
-            # Raise an exception for API/CLI to catch
             raise ValueError(f"Car with VIN {vin} not found.")
 
-        # Temporarily create a new Car instance to leverage its validation logic
+        if new_price is None and new_year is None:
+            raise ValueError("No changes specified (both price and year skipped).") 
+
+        # Use new/old values for validation via Car.__init__ before applying changes
         temp_price = new_price if new_price is not None else car.price
         temp_year = new_year if new_year is not None else car.year
-        
+        temp_image_url = car.image_url 
+
         try:
-            # Validate new values by attempting to create a new Car (won't save it)
-            Car(car.make, car.model, temp_year, temp_price, car.vin)
+            # Re-validate the car with proposed changes
+            Car(car.make, car.model, temp_year, temp_price, car.vin, image_url=temp_image_url) 
         except ValueError as e:
-            # Re-raise the ValueError with context
             raise ValueError(f"Validation error during edit: {e}") from e
 
-        # If validation passed, apply the changes to the original car object
+        # If validation passed, apply the changes
         if new_price is not None:
             car.price = float(new_price)
         if new_year is not None:
@@ -127,13 +124,13 @@ class DealerManager:
             
         return True
 
-    def remove_car(self, vin):
-        """Removes a car from the inventory by its VIN and records the sale. (UPDATED)"""
+    def remove_car(self, vin: str) -> bool:
+        """Removes a car from the inventory by its VIN and records the sale."""
         car_to_sell = self.find_car_by_vin(vin)
         vin = vin.strip().upper()
 
         if car_to_sell:
-            # 1. Record the sale
+            # 1. Record the sale (uses Car.to_dict(), which includes image_url)
             sale_record = car_to_sell.to_dict()
             sale_record['sale_date'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             self.sales_history.append(sale_record)
@@ -147,11 +144,29 @@ class DealerManager:
             print(f"Error: Car with VIN {vin} not found.")
             return False
             
-    def get_sales_history(self):
+    def get_sales_history(self) -> List[Dict[str, Any]]:
         """Returns the list of sales records."""
         return self.sales_history
 
-    def search_cars(self, query):
+    def view_sales_history(self):
+        """Prints the sales history and summary to the console."""
+        if not self.sales_history:
+            print("\nNo sales transactions have been recorded.")
+            return
+
+        total_revenue = sum(record['price'] for record in self.sales_history)
+        
+        print("\n--- Sales History Report ---")
+        print(f"Total Cars Sold: {len(self.sales_history)}")
+        print(f"Total Revenue: ${total_revenue:,.2f}")
+        print("-" * 30)
+
+        # Display sales in reverse chronological order
+        for i, car in enumerate(reversed(self.sales_history)):
+            print(f"[{len(self.sales_history) - i}]: {car['sale_date']} | {car['year']} {car['make']} {car['model']} | Price: ${car['price']:,.2f}")
+        print("-" * 30)
+
+    def search_cars(self, query: str) -> List[Car]:
         """Searches for cars matching the query in make or model (case-insensitive)."""
         query = query.lower().strip()
         results = [
@@ -160,6 +175,6 @@ class DealerManager:
         ]
         return results
 
-    def get_inventory(self):
+    def get_inventory(self) -> List[Car]:
         """Returns the entire inventory list."""
         return self.inventory

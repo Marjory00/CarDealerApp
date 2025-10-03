@@ -2,17 +2,41 @@
     {
         "make": "Toyota",
         "model": "Camry",
-        "year": 2022,
-        "price": 25500.00,
-        "vin": "VIN00000000000CAMRY",
-        "sale_date": "2025-10-03 16:00:37"
+        "year": 2023,
+        "price": 28500.00,
+        "vin": "VIN23TOYOCAMRY001A",
+        "image_url": "car_images/toyota_camry_2023.jpg"
+    },
+    {
+        "make": "Honda",
+        "model": "CR-V",
+        "year": 2024,
+        "price": 32150.50,
+        "vin": "VIN24HONDACRV0002B",
+        "image_url": "car_images/honda_crv_2024.jpg"
     },
     {
         "make": "Ford",
         "model": "Mustang",
         "year": 1969,
-        "price": 65000.75,
-        "vin": "VIN0000000000MUSTANG",
-        "sale_date": "2025-10-03 16:05:12"
+        "price": 65000.00,
+        "vin": "VIN69FORDMUSTG0003C",
+        "image_url": "car_images/ford_mustang_1969.jpg"
+    },
+    {
+        "make": "Tesla",
+        "model": "Model 3",
+        "year": 2022,
+        "price": 41999.99,
+        "vin": "VIN22TESLM30000004D",
+        "image_url": "car_images/tesla_model3_2022.jpg"
+    },
+    {
+        "make": "BMW",
+        "model": "X5",
+        "year": 2021,
+        "price": 55500.00,
+        "vin": "VIN21BMWX500000005E",
+        "image_url": "car_images/bmw_x5_2021.jpg"
     }
 ]

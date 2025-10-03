@@ -1,49 +1,39 @@
-{% extends "layout.html" %}
-
-{% block title %}Inventory{% endblock %}
+{% extends "base.html" %}
 
 {% block content %}
-    <h2>Current Inventory ({{ inventory|length }} Cars)</h2>
-    
-    <div class="search-container">
-        <form method="GET" action="{{ url_for('index') }}">
-            <input type="text" name="query" placeholder="Search by Make or Model..." 
-                   value="{{ search_query if search_query }}" 
-                   class="search-input">
-            <button type="submit" class="btn btn-primary">Search</button>
-            {% if search_query %}
-                <a href="{{ url_for('index') }}" class="btn btn-secondary">Clear Search</a>
-            {% endif %}
-        </form>
+    <div class="welcome-section">
+        <h2>🚗 Platform Overview</h2>
+        <p>This is your comprehensive web-based Car Inventory and Sales Manager, powered by Flask and Python.</p>
+        <p>Currently managing <strong>{{ total_cars }}</strong> cars in stock.</p>
     </div>
 
-    {% if search_query %}
-        <p class="search-status">
-            Showing results for: <strong>"{{ search_query }}"</strong>.
-        </p>
-    {% endif %}
+    <div class="models-display">
+        <h2>✨ Featured Models Showcase</h2>
+        <div class="model-list">
+            {% for model in featured_models %}
+            <div class="model-card">
+                <h3>{{ model.name }}</h3>
+                <p><strong>Engine:</strong> {{ model.engine }}</p>
+                <p><strong>Status:</strong> {{ model.status }}</p>
+                <p><small>(Image placeholder here)</small></p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
 
-    
+    <hr>
+
+    <h2>📦 Current Inventory List</h2>
     {% if inventory %}
         <table class="inventory-table">
             <thead>
                 <tr>
-                    <th>
-                        <a href="{{ url_for('index', sort='vin', query=search_query) }}" class="sort-link">VIN</a>
-                    </th>
-                    <th>
-                        <a href="{{ url_for('index', sort='year', query=search_query) }}" class="sort-link">Year</a>
-                    </th>
-                    <th>
-                        <a href="{{ url_for('index', sort='make', query=search_query) }}" class="sort-link">Make</a>
-                    </th>
-                    <th>
-                        <a href="{{ url_for('index', sort='model', query=search_query) }}" class="sort-link">Model</a>
-                    </th>
-                    <th>
-                        <a href="{{ url_for('index', sort='price', query=search_query) }}" class="sort-link">Price</a>
-                    </th>
-                    <th>Actions</th>
+                    <th>VIN</th>
+                    <th>Year</th>
+                    <th>Make</th>
+                    <th>Model</th>
+                    <th>Price</th>
+                    <th>Image URL</th>
                 </tr>
             </thead>
             <tbody>
@@ -53,28 +43,14 @@
                     <td>{{ car.year }}</td>
                     <td>{{ car.make }}</td>
                     <td>{{ car.model }}</td>
-                    <td>${{ "{:,.2f}".format(car.price) }}</td> 
-                    <td>
-                        <a href="{{ url_for('edit_car_route', vin=car.vin) }}" class="btn btn-primary" style="margin-right: 5px;">
-                            Edit
-                        </a>
-                        <a href="{{ url_for('sell_car_route', vin=car.vin) }}" class="btn btn-sell" 
-                           onclick="return confirm('Are you sure you want to sell this car?');">
-                           Sell
-                        </a>
-                    </td>
+                    <td class="price">${{ "{:,.2f}".format(car.price) }}</td>
+                    <td><small>{{ car.image_url }}</small></td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     {% else %}
-        <p class="empty-inventory">
-            {% if search_query %}
-                No cars found matching your search criteria.
-            {% else %}
-                The dealership inventory is currently empty. Start by adding a car!
-            {% endif %}
-        </p>
+        <p>The inventory is currently empty. Use the "Add Car" link to populate the stock.</p>
     {% endif %}
 
 {% endblock %}

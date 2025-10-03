@@ -1,0 +1,12 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>{{ title }}</h2>
+    <div class="info-content">
+        {% for item in content %}
+            <p>{{ item }}</p>
+        {% endfor %}
+    </div>
+    <p><a href="{{ url_for('index') }}">← Back to Home</a></p>
+{% endblock %}
