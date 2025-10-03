@@ -28,11 +28,21 @@
         <table class="inventory-table">
             <thead>
                 <tr>
-                    <th>VIN</th>
-                    <th>Year</th>
-                    <th>Make</th>
-                    <th>Model</th>
-                    <th>Price</th>
+                    <th>
+                        <a href="{{ url_for('index', sort='vin', query=search_query) }}" class="sort-link">VIN</a>
+                    </th>
+                    <th>
+                        <a href="{{ url_for('index', sort='year', query=search_query) }}" class="sort-link">Year</a>
+                    </th>
+                    <th>
+                        <a href="{{ url_for('index', sort='make', query=search_query) }}" class="sort-link">Make</a>
+                    </th>
+                    <th>
+                        <a href="{{ url_for('index', sort='model', query=search_query) }}" class="sort-link">Model</a>
+                    </th>
+                    <th>
+                        <a href="{{ url_for('index', sort='price', query=search_query) }}" class="sort-link">Price</a>
+                    </th>
                     <th>Actions</th>
                 </tr>
             </thead>

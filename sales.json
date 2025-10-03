@@ -1,0 +1,18 @@
+[
+    {
+        "make": "Toyota",
+        "model": "Camry",
+        "year": 2022,
+        "price": 25500.00,
+        "vin": "VIN00000000000CAMRY",
+        "sale_date": "2025-10-03 16:00:37"
+    },
+    {
+        "make": "Ford",
+        "model": "Mustang",
+        "year": 1969,
+        "price": 65000.75,
+        "vin": "VIN0000000000MUSTANG",
+        "sale_date": "2025-10-03 16:05:12"
+    }
+]
