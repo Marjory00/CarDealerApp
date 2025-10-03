@@ -1,12 +1,13 @@
-
-# Python
+# Python bytecode and cache
 __pycache__/
 *.pyc
-*.pyo
 
-# IDE/Editor files
-.vscode/ # VS Code configuration (optional, depends on preference)
-.DS_Store # macOS files
+# Data file (keep local test data off GitHub)
+cars.json
 
-# Data files we might want to keep private or auto-generate
-cars.json # Ignoring the data file so it doesn't pollute the repository with test data
+# Environment files
+.env
+venv/
+
+# VS Code settings (optional, but good practice)
+.vscode/
