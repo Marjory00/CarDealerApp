@@ -1,5 +1,6 @@
 <!-- index.html -->
 
+
 {% extends "base.html" %}
 
 {% block title %}Inventory Overview{% endblock %}
@@ -87,7 +88,7 @@
                     <td>{{ car.model }}</td>
                     <td class="price">${{ "{:,.2f}".format(car.price) }}</td>
                     <td>
-                        <a href="{{ url_for('car_detail_route', vin=car.vin) }}" class="btn btn-primary" style="padding: 5px 10px;">Details</a>
+                        <a href="{{ url_for('car_detail', vin=car.vin) }}" class="btn btn-primary" style="padding: 5px 10px;">Details</a>
                     </td>
                 </tr>
                 {% endfor %}

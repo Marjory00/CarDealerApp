@@ -1,6 +1,5 @@
 <!-- car_detail.html -->
 
-
 {% extends "base.html" %}
 
 {% block title %}
@@ -17,15 +16,16 @@
         
         <img src="{{ url_for('static', filename=image_path) }}"
              alt="{{ car.make }} {{ car.model }} Photo"
-              data-fallback-src="{{ url_for('static', filename='images/placeholder.png') }}"
-            onerror="this.onerror=null; this.src=this.getAttribute('data-fallback-src');"   
+             data-fallback-src="{{ url_for('static', filename='images/placeholder.png') }}"
+             onerror="this.onerror=null; this.src=this.getAttribute('data-fallback-src');"   
              style="max-width: 100%; height: auto; border-radius: 5px; margin-bottom: 20px;">
 
 
-         <p><strong>VIN:</strong> {{ car.vin }}</p>
+        <p><strong>VIN:</strong> {{ car.vin }}</p>
         <p><strong>Price:</strong> <span class="price">${{ "{:,.2f}".format(car.price) }}</span></p>
         <p><strong>Year:</strong> {{ car.year }}</p>
-        <p><strong>Image URL:</strong> {{ car.image.url }}</p>
+        
+        <p><strong>Image URL:</strong> {{ car.image_url }}</p>
 
         <div class="action-buttons" style="margin-top: 30px; display: flex; gap: 10px;">
             <a href="{{ url_for('edit_car_web', vin=car.vin) }}" class="btn btn-secondary">📝 Edit Details</a>

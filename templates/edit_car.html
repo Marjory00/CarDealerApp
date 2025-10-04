@@ -1,21 +1,28 @@
 
 <!-- edit_car.html -->
 
+
 {% extends "base.html" %}
 
-{% block title %}Edit {{ car.make }} {{ car.model }}{% endblock %} {% block content %}
+{% block title %}Edit {{ car.make }} {{ car.model }}{% endblock %} 
+
+{% block content %}
     <div class="form-container">
         <h2>📝 Edit {{ car.year }} {{ car.make }} {{ car.model }}</h2>
         <p>You can update the **Year**, **Price**, and **Image URL**.</p>
         <hr>
         
-        {% if error %}
-            <div class="flash-message flash-danger" role="alert" style="margin-bottom: 20px;">
-                {{ error }}
-            </div>
-        {% endif %}
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message flash-{{ category }}" role="alert" style="margin-bottom: 20px;">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
         
-        <form method="POST" action="{{ url_for('edit_car_route', vin=car.vin) }}">
+        <form method="POST" action="{{ url_for('edit_car_web', vin=car.vin) }}">
             
             <p><strong>VIN:</strong> {{ car.vin }}</p>
             <p><strong>Make:</strong> {{ car.make }}</p>
@@ -23,17 +30,19 @@
             
             <label for="year">New Year:</label>
             <input type="number" id="year" name="year" value="{{ car.year }}" required min="1900" 
-                   max="2050"> 
+                     max="{{ max_year }}"> 
 
             <label for="price">New Price ($):</label>
             <input type="number" id="price" name="price" value="{{ car.price | float }}" required step="0.01" min="1">
             
             <label for="image_url">New Image URL (Optional):</label>
             <input type="text" id="image_url" name="image_url" 
-                   value="{% if car.image_url and car.image_url != '/static/placeholder.png' %}{{ car.image_url }}{% endif %}">
+                     value="{{ car.image_url or '' }}">
 
             <button type="submit" class="btn btn-primary" style="margin-top: 20px;">Save Changes</button>
         </form>
-        <a href="{{ url_for('index') }}" style="display: block; margin-top: 15px;">← Cancel and Go Back to Inventory</a>
+        
+        <a href="{{ url_for('car_detail', vin=car.vin) }}" class="btn btn-secondary" style="margin-top: 15px; margin-left: 10px;">Cancel</a>
+        <a href="{{ url_for('index') }}" style="display: block; margin-top: 15px;">← Back to Inventory List</a>
     </div>
 {% endblock %}

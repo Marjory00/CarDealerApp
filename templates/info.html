@@ -1,9 +1,10 @@
 <!-- info.html -->
 
-
 {% extends "base.html" %}
 
-{% block title %}{{ title | default('Information') }}{% endblock %} {% block content %}
+{% block title %}{{ title | default('Information') }}{% endblock %} 
+
+{% block content %}
     <h2>{{ title | default('Information') }}</h2> 
     <div class="info-content"> 
         {% for item in content %}
@@ -11,6 +12,6 @@
         {% endfor %}
     </div>
     
-    <p><a href="{{ url_for('index') }}" class="button secondary-button">← Back to Inventory</a></p>
+    <p><a href="{{ url_for('index') }}" class="btn btn-secondary">← Back to Inventory</a></p>
     
 {% endblock %}

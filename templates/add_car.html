@@ -1,6 +1,5 @@
 <!-- add_car.html -->
 
-
 {% extends "base.html" %}
 
 {% block title %}Add New Car{% endblock %}
@@ -19,7 +18,7 @@
             {% endif %}
         {% endwith %}
 
-        <form method="POST" action="{{ url_for('add_car_route') }}">
+        <form method="POST" action="{{ url_for('add_car') }}">
             
             <label for="make">Make:</label>
             <input type="text" id="make" name="make" value="{{ form_data.make or '' }}" required>

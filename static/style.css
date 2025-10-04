@@ -20,6 +20,34 @@ header h1 {
     font-size: 2.2em;
 }
 
+/* Targets links inside the main navigation area */
+header nav a {
+    color: white; /* Example: makes links white if the header background is dark */
+    padding: 0 15px; /* Adds spacing between links */
+    font-weight: bold;
+}
+
+header nav a:hover {
+    color: #ffc107; /* Example: yellow color on hover */
+}
+
+
+header a {
+    text-decoration: none !important; /* Forces the underline off */
+    color: white; /* Example color */
+}
+
+
+/* Targets links in the footer section */
+footer a {
+    color: #ccc; /* Example: light grey for a dark footer */
+    margin: 0 10px;
+}
+
+footer a:hover {
+    color: white;
+}
+
 nav ul {
     list-style: none;
     padding: 0;
@@ -208,4 +236,16 @@ form input[type="number"] {
 .action-buttons {
     display: flex;
     gap: 10px;
+}
+
+/* Removes the default underline from all links */
+a {
+    text-decoration: none;
+    color: #007bff; /* A default color for general links */
+}
+
+/* Style for when the mouse hovers over a link */
+a:hover {
+    text-decoration: underline; /* Optional: adds underline back on hover */
+    color: #0056b3; /* Darker color on hover */
 }

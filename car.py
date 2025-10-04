@@ -1,6 +1,5 @@
 # car.py
 
-# car.py (FIXED)
 
 from datetime import date
 from typing import Dict, Any, Tuple

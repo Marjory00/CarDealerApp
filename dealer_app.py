@@ -1,6 +1,7 @@
 # dealer_app.py
 
-# dealer_manager.py (Fixed to match Flask requirements and functionality)
+# dealer_app.py
+
 
 import json
 import os

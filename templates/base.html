@@ -5,41 +5,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Car Dealer Pro | {% block title %}Management{% endblock %}</title> 
+    <title>{% block title %}Car Dealer Inventory{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
 </head>
 <body>
-    <header>
-        <div class="container"> <h1>🚗 Car Dealer Pro</h1>
+
+    <header class="navbar">
+        <div class="nav-content-left">
+            <a href="{{ url_for('index') }}" class="nav-brand">Car Dealer Manager</a>
+        </div>
+        <div class="nav-content-center">
+            <h1 class="nav-header">DEALERSHIP INVENTORY</h1>
+        </div>
+        <div class="nav-content-right">
             <nav>
-                <ul>
-                    <li><a href="{{ url_for('index') }}">Inventory</a></li>
-                    <li><a href="{{ url_for('add_car_route') }}">Add New Car</a></li> 
-                    <li><a href="{{ url_for('sales_history_route') }}">Sales History</a></li> 
-                </ul>
+                <a href="{{ url_for('index') }}">Inventory</a>
+                <a href="{{ url_for('add_car') }}">Add Car</a> 
+                <a href="{{ url_for('sales_report') }}">Sales Report</a>
             </nav>
         </div>
     </header>
-    
-    <main class="container"> 
+
+    <main class="container">
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
-                <div class="flash-container" role="status"> 
-                    {% for category, message in messages %}
-                        <div class="flash-messages flash-{{ category }}">{{ message }}</div> 
-                    {% endfor %}
+                <div class="flash-messages-container">
+                {% for category, message in messages %}
+                    <div class="flash-message flash-{{ category }}">{{ message }}</div>
+                {% endfor %}
                 </div>
             {% endif %}
         {% endwith %}
-
+        
         {% block content %}{% endblock %}
     </main>
 
-    <footer>
-        <div class="container">
-            <p>&copy; 2025 Car Dealer Pro Management System</p>
-        </div>
+    <footer class="footer">
+        <p>&copy; {{ now.year if now is defined else 2024 }} Car Dealer Manager. All Rights Reserved.</p>
+        <p class="footer-contact">Contact: support@cardealerapp.com</p>
     </footer>
 </body>
 </html>

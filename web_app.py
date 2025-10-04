@@ -5,7 +5,7 @@ from dealer_manager import DealerManager, DATA_FILE, SALES_FILE
 from car import Car
 import os 
 from typing import Optional
-import datetime # <-- FIX 1: Import datetime
+import datetime 
 
 # --- ROBUST FIX: Explicitly define the template folder path ---
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -20,7 +20,7 @@ app.secret_key = 'super_secret_dealer_key'
 manager = DealerManager(file_path=DATA_FILE, sales_file=SALES_FILE)
 
 # Calculate max year once for use in both add and edit forms
-MAX_YEAR = datetime.datetime.now().year + 2 # <-- FIX 2: Calculate MAX_YEAR
+MAX_YEAR = datetime.datetime.now().year + 2 
 
 # Hardcoded featured models for the 'Models Display' section
 FEATURED_MODELS = [
@@ -28,6 +28,13 @@ FEATURED_MODELS = [
     {"name": "Tesla Model 3", "engine": "Electric", "status": "Electric Future"},
     {"name": "Honda CR-V", "engine": "I4", "status": "Family Favorite"},
 ]
+
+# --- FIX 1: Add context processor for the footer (to inject 'now' variable) ---
+@app.context_processor
+def inject_current_year():
+    """Injects the current datetime object into all templates for use in the footer."""
+    return {'now': datetime.datetime.now()}
+# -----------------------------------------------------------------------------
 
 @app.route('/')
 def index():
@@ -55,6 +62,7 @@ def index():
 @app.route('/add', methods=['GET', 'POST'])
 def add_car_web():
     """Handles the Add Car form."""
+    # ... (No changes needed in this function's logic) ...
     if request.method == 'POST':
         try:
             # Extract data from form
@@ -98,6 +106,7 @@ def car_detail(vin):
 @app.route('/edit/<vin>', methods=['GET', 'POST'])
 def edit_car_web(vin):
     """Handles the Edit Car form."""
+    # ... (No changes needed in this function's logic) ...
     car = manager.find_car_by_vin(vin)
     if not car:
         flash(f"Error: Car with VIN {vin} not found.", 'error')
@@ -145,7 +154,7 @@ def edit_car_web(vin):
         except ValueError as e:
             flash(f"Input Error: Price or Year must be valid numbers. Details: {e}", 'error')
             # Stay on the edit page, passing back the current car object
-            return render_template('edit.html', car=car, max_year=MAX_YEAR) # Pass max_year
+            return render_template('edit.html', car=car, max_year=MAX_YEAR) 
             
     # GET request: Pass max_year
     return render_template('edit.html', car=car, max_year=MAX_YEAR)
