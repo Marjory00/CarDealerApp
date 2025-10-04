@@ -1,0 +1,40 @@
+<!-- sold_cars.html -->
+
+{% extends "base.html" %}
+
+{% block title %}Sold Cars List{% endblock %}
+
+{% block content %}
+    <h2 class="page-title">💰 Sold Inventory ({{ cars | length }})</h2>
+
+    <div class="action-buttons" style="margin-bottom: 20px;">
+        <a href="{{ url_for('index') }}" class="btn btn-secondary">← Back to Current Inventory</a>
+    </div>
+
+    {% if cars %}
+        <table class="inventory-table">
+            <thead>
+                <tr>
+                    <th>VIN</th>
+                    <th>Make</th>
+                    <th>Model</th>
+                    <th>Year</th>
+                    <th>Price Sold</th>
+                    </tr>
+            </thead>
+            <tbody>
+                {% for car in cars %}
+                <tr>
+                    <td>{{ car.vin }}</td>
+                    <td>{{ car.make }}</td>
+                    <td>{{ car.model }}</td>
+                    <td>{{ car.year }}</td>
+                    <td class="price">${{ "{:,.2f}".format(car.price) }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="flash-message flash-success">No cars have been marked as sold yet!</p>
+    {% endif %}
+{% endblock %}

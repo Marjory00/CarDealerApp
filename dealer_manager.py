@@ -1,6 +1,7 @@
 # dealer_manager.py
 
 
+# dealer_manager.py
 
 import json
 import os
@@ -23,6 +24,19 @@ class DealerManager:
         self.sales_history: List[Dict[str, Any]] = [] 
         self._load_data()
         self._load_sales_history()
+
+
+    # --- FIXED Update: To Fetch cars that are sold ---
+
+    def get_sold_cars(self) -> List[Dict[str, Any]]:
+        """
+        Returns a list of all cars that have been sold. 
+        Since sold cars are removed from inventory and stored in self.sales_history 
+        as dictionaries, we return the sales history.
+        """
+        # FIX: Return the sales history, reversed to show newest sales first.
+        return list(reversed(self.sales_history))
+
 
     # --- Internal Data Loading/Saving ---
 
@@ -93,9 +107,9 @@ class DealerManager:
         return True
     
     def edit_car(self, vin: str, 
-                 new_price: Optional[float] = None, 
-                 new_image_url: Optional[str] = None, 
-                 new_year: Optional[int] = None) -> bool:
+                  new_price: Optional[float] = None, 
+                  new_image_url: Optional[str] = None, 
+                  new_year: Optional[int] = None) -> bool:
         """Updates specific details of an existing car."""
         car = self.find_car_by_vin(vin)
         if not car:
