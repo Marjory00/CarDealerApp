@@ -1,8 +1,5 @@
 # dealer_manager.py
 
-
-# dealer_manager.py
-
 import json
 import os
 from datetime import datetime
@@ -32,9 +29,8 @@ class DealerManager:
         """
         Returns a list of all cars that have been sold. 
         Since sold cars are removed from inventory and stored in self.sales_history 
-        as dictionaries, we return the sales history.
+        as dictionaries, we return the sales history, reversed to show newest sales first.
         """
-        # FIX: Return the sales history, reversed to show newest sales first.
         return list(reversed(self.sales_history))
 
 
@@ -48,8 +44,7 @@ class DealerManager:
                     data = json.load(f)
                     for car_data in data:
                         try:
-                            # FIX: Reverting to explicit key passing for robustness 
-                            # against potential JSON key/order variations vs. Car constructor.
+                            # Robust loading using .get()
                             self.inventory.append(Car(
                                 make=car_data.get('make'),
                                 model=car_data.get('model'),
@@ -59,10 +54,17 @@ class DealerManager:
                                 image_url=car_data.get('image_url', "")
                             ))
                         except (TypeError, ValueError) as e:
-                            # Added detailed context to the error message for debugging
+                            # Skip corrupt entries
                             print(f"Skipping corrupt car entry in JSON: {car_data}. Error: {e}") 
-            except (IOError, json.JSONDecodeError):
+            except (IOError, json.JSONDecodeError) as e:
+                # Catching specific loading errors and resetting inventory
+                print(f"Error loading inventory data: {e}. Inventory reset.")
                 self.inventory = [] 
+
+        # --- DEBUG LINE ---
+        print(f"DEBUG: Loaded {len(self.inventory)} cars from {self.file_path}.")
+        # ------------------
+        
 
     def _load_sales_history(self):
         """Loads sales data from the sales JSON file."""
@@ -118,7 +120,6 @@ class DealerManager:
         # 1. Update Price
         if new_price is not None:
             try:
-                # Basic validation: must be positive
                 if new_price <= 0:
                     raise ValueError("Price must be positive.")
                 car.price = new_price
@@ -132,10 +133,7 @@ class DealerManager:
         # 3. Update Year
         if new_year is not None:
             try:
-                # The most reliable way to validate changes (like year) is to check 
-                # against the Car validation logic. We temporarily create a Car instance
-                # using the existing attributes and the new year to check.
-                # Note: This is computationally heavier but ensures full validation.
+                # Validation check using Car constructor logic
                 Car(car.make, car.model, new_year, car.price, car.vin, car.image_url) 
                 car.year = new_year
             except ValueError:
@@ -155,7 +153,6 @@ class DealerManager:
         self.sales_history.append(sale_record)
         
         # 2. Remove from inventory
-        # The filter must use the normalized VIN to match the find_car_by_vin logic
         normalized_vin = vin.strip().upper()
         self.inventory = [c for c in self.inventory if c.vin != normalized_vin]
         
@@ -165,17 +162,27 @@ class DealerManager:
         """Returns the entire inventory list."""
         return self.inventory
 
+
     def search_cars(self, query: str) -> List[Car]:
-        """Searches cars by make or model."""
-        query = query.strip().lower()
-        if not query:
-            return []
+        """
+        FIX: Searches cars by make or model. Uses robust attribute checking 
+        and lower-cases all values for comparison. Returns full inventory if query is empty.
+        """
+        normalized_query = query.strip().lower()
+
+        if not normalized_query:
+            return self.inventory
+        
         
         results = [
             car for car in self.inventory 
-            if query in car.make.lower() or query in car.model.lower()
+            # Robust check: use getattr with empty string default to avoid AttributeError 
+            # and ensure string methods (.lower()) work even if attributes are unexpectedly None
+            if normalized_query in str(getattr(car, 'make', '')).lower() 
+            or normalized_query in str(getattr(car, 'model', '')).lower()
         ]
         return results
+    
 
     def get_sales_report(self) -> Dict[str, Any]:
         """Generates a summary of sales history."""
@@ -185,6 +192,5 @@ class DealerManager:
         return {
             'total_sold': total_sold,
             'total_revenue': total_revenue,
-            # FIX: Return history in reverse-chronological order (newest first)
             'history': list(reversed(self.sales_history)) 
         }

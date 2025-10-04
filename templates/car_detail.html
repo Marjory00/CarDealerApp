@@ -3,35 +3,50 @@
 {% extends "base.html" %}
 
 {% block title %}
-    Car Detail: {{ car.make }} {{ car.model }}
+    Car Detail: {{ car.year }} {{ car.make }} {{ car.model }}
 {% endblock %}
 
 {% block content %}
     <div class="form-container">
-        <h2>{{ car.year }} {{ car.make }} {{ car.model }} ({{ car.vin }})</h2>
+        <h2>{{ car.year }} {{ car.make }} {{ car.model }}</h2>
+        <p class="text-muted">VIN: **{{ car.vin }}**</p>
         <hr>
 
-        {# Set the primary image path, falling back to placeholder if image_url is empty/None #}
+        {# 
+        FIX: The logic here is complex but keeps the assumption that 'car.image_url' 
+        is a filename inside the static/images folder.
+        If car.image_url is a full web URL (e.g., http://...), you would use it directly:
+        {% set image_src = car.image_url if car.image_url else url_for('static', filename='images/placeholder.png') %}
+        
+        Using your current logic:
+        #}
         {% set image_path = 'images/' + car.image_url if car.image_url and car.image_url.strip() else 'images/placeholder.png' %}
         
         <img src="{{ url_for('static', filename=image_path) }}"
-             alt="{{ car.make }} {{ car.model }} Photo"
-             data-fallback-src="{{ url_for('static', filename='images/placeholder.png') }}"
-             onerror="this.onerror=null; this.src=this.getAttribute('data-fallback-src');"   
-             style="max-width: 100%; height: auto; border-radius: 5px; margin-bottom: 20px;">
+              alt="{{ car.make }} {{ car.model }} Photo"
+              data-fallback-src="{{ url_for('static', filename='images/placeholder.png') }}"
+              onerror="this.onerror=null; this.src=this.getAttribute('data-fallback-src');"   
+              style="max-width: 100%; height: auto; border-radius: 5px; margin-bottom: 20px;">
 
 
-        <p><strong>VIN:</strong> {{ car.vin }}</p>
-        <p><strong>Price:</strong> <span class="price">${{ "{:,.2f}".format(car.price) }}</span></p>
-        <p><strong>Year:</strong> {{ car.year }}</p>
+        <div class="specs-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <p><strong>Year:</strong> {{ car.year }}</p>
+            <p><strong>Price:</strong> <span class="price">${{ "{:,.2f}".format(car.price) }}</span></p>
+            <p><strong>Make:</strong> {{ car.make }}</p>
+            <p><strong>Model:</strong> {{ car.model }}</p>
+            <p style="grid-column: 1 / span 2;"><strong>VIN:</strong> {{ car.vin }}</p>
+        </div>
+
+        {# Removed raw Image URL display as it's primarily a backend detail #}
         
-        <p><strong>Image URL:</strong> {{ car.image_url }}</p>
-
         <div class="action-buttons" style="margin-top: 30px; display: flex; gap: 10px;">
-            <a href="{{ url_for('edit_car_web', vin=car.vin) }}" class="btn btn-secondary">📝 Edit Details</a>
+            
+            {# FIX: Changed endpoint from 'edit_car_web' to 'edit_car' #}
+            <a href="{{ url_for('edit_car', vin=car.vin) }}" class="btn btn-secondary">📝 Edit Details</a>
 
+            {# FIX: Changed endpoint from 'sell_car_web' to 'sell_car' #}
             <form method="POST"
-                  action="{{ url_for('sell_car_web', vin=car.vin) }}"
+                  action="{{ url_for('sell_car', vin=car.vin) }}"
                   onsubmit="return confirm('Are you sure you want to sell {{ car.make }} {{ car.model }}? This action is permanent and will remove it from inventory.');"
                   style="margin: 0;">
                 <button type="submit" class="btn btn-danger">💰 Sell Car</button>

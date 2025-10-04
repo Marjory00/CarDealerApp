@@ -1,40 +1,50 @@
 <!-- sold_cars.html -->
 
+
 {% extends "base.html" %}
 
-{% block title %}Sold Cars List{% endblock %}
+{% block title %}Sold Car History Report{% endblock %}
 
 {% block content %}
-    <h2 class="page-title">💰 Sold Inventory ({{ cars | length }})</h2>
+    <h2 class="page-title">💰 Sold Inventory ({{ cars | length }} Vehicles)</h2>
 
     <div class="action-buttons" style="margin-bottom: 20px;">
         <a href="{{ url_for('index') }}" class="btn btn-secondary">← Back to Current Inventory</a>
+        {# You might also add a link to the detailed Sales Report page here if you have one #}
+        {% if url_for('sales_report', _external=False) is defined %}
+        <a href="{{ url_for('sales_report') }}" class="btn btn-info">View Sales Summary</a>
+        {% endif %}
     </div>
 
     {% if cars %}
         <table class="inventory-table">
             <thead>
                 <tr>
-                    <th>VIN</th>
+                    <th>Sale Date</th>
+                    <th>Year</th>
                     <th>Make</th>
                     <th>Model</th>
-                    <th>Year</th>
+                    <th>VIN</th>
                     <th>Price Sold</th>
-                    </tr>
+                </tr>
             </thead>
             <tbody>
                 {% for car in cars %}
                 <tr>
-                    <td>{{ car.vin }}</td>
+                    {# FIX: Added the Sale Date column, assuming the sold car object has a 'sale_date' attribute (which is required by the sell_car logic) #}
+                    <td>{{ car.sale_date.strftime('%Y-%m-%d') if car.sale_date else 'N/A' }}</td>
+                    <td>{{ car.year }}</td>
                     <td>{{ car.make }}</td>
                     <td>{{ car.model }}</td>
-                    <td>{{ car.year }}</td>
+                    <td>{{ car.vin }}</td>
                     <td class="price">${{ "{:,.2f}".format(car.price) }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     {% else %}
-        <p class="flash-message flash-success">No cars have been marked as sold yet!</p>
+        <p class="alert alert-info" style="font-size: 1.1em;">
+            The sales history is currently empty. No cars have been marked as sold yet!
+        </p>
     {% endif %}
 {% endblock %}

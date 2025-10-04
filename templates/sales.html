@@ -1,7 +1,6 @@
 <!-- sales.html -->
 
 
-
 {% extends "base.html" %}
 
 {% block title %}Sales History Report{% endblock %} 
@@ -9,21 +8,41 @@
 {% block content %}
     <h2>💰 Sales History Report</h2>
 
-    {% if report %}
-        <div class="report-summary" style="display: flex; gap: 20px;"> 
-            <div class="model-card" style="flex: none; width: 300px; border-left: 5px solid #0056b3; padding: 15px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+    <div class="action-buttons" style="margin-bottom: 20px;">
+        <a href="{{ url_for('index') }}" class="btn btn-secondary">← Back to Current Inventory</a>
+    </div>
+
+    {% if report and report.total_sold > 0 %}
+        <hr>
+        <h3>Sales Summary</h3>
+        <div class="report-summary" style="display: flex; gap: 20px; flex-wrap: wrap;"> 
+            
+            <div class="model-card summary-card" style="border-left: 5px solid #0056b3;">
                 <h3>Total Cars Sold</h3>
                 <p style="font-size: 2em; color: #0056b3; margin: 5px 0;">{{ report.total_sold }}</p>
             </div>
-            <div class="model-card" style="flex: none; width: 300px; border-left: 5px solid #28a745; padding: 15px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+            
+            <div class="model-card summary-card" style="border-left: 5px solid #28a745;">
                 <h3>Total Revenue</h3>
-                <p style="font-size: 2em; color: #28a745; margin: 5px 0;">${{ "{:,.2f}".format(report.total_revenue) }}</p>
+                <p style="font-size: 2em; color: #28a745; margin: 5px 0;">
+                    ${{ "{:,.2f}".format(report.total_revenue) }}
+                </p>
             </div>
+            
+            {% set avg_price = report.total_revenue / report.total_sold %}
+            <div class="model-card summary-card" style="border-left: 5px solid #ffc107;">
+                <h3>Average Sale Price</h3>
+                <p style="font-size: 2em; color: #ffc107; margin: 5px 0;">
+                    ${{ "{:,.2f}".format(avg_price) }}
+                </p>
+            </div>
+            
         </div>
-
+        
         <hr>
 
-        <h3>Sales Log</h3>
+        <h3>Detailed Sales Log ({{ report.total_sold }} Entries)</h3>
+        
         {% if report.history %}
             <table class="inventory-table">
                 <thead>
@@ -39,7 +58,7 @@
                 <tbody>
                     {% for sale in report.history %}
                     <tr>
-                        <td>{{ sale.sale_date }}</td>
+                        <td>{{ sale.sale_date.strftime('%Y-%m-%d') if sale.sale_date else 'N/A' }}</td>
                         <td>{{ sale.year }}</td>
                         <td>{{ sale.make }}</td>
                         <td>{{ sale.model }}</td>
@@ -49,12 +68,12 @@
                     {% endfor %}
                 </tbody>
             </table>
-        {% else %}
-            <p>No sales have been recorded yet.</p>
         {% endif %}
 
     {% else %}
-        <p>Could not generate the sales report.</p>
+        <p class="alert alert-info">
+            No sales have been recorded yet. The sales report is empty.
+        </p>
     {% endif %}
 
 {% endblock %}

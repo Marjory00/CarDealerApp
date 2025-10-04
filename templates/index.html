@@ -6,11 +6,11 @@
 {% block title %}Inventory Overview{% endblock %}
 
 {% block content %}
-    <h2>Inventory Overview (Total: {{ inventory | length }} Cars)</h2>
+    <h2>Car Inventory 🚗</h2>
 
     <div class="search-bar">
         <form method="GET" action="{{ url_for('index') }}" style="display: flex; flex-grow: 1; gap: 10px;">
-            <input type="text" name="query" placeholder="Search by Make or Model..." value="{{ search_query }}" required>
+            <input type="text" name="query" placeholder="Search by Make or Model..." value="{{ search_query }}">
             <button type="submit" class="btn btn-primary">Search</button>
             {% if search_query %}
                 <a href="{{ url_for('index') }}" class="btn btn-secondary">Clear Search</a>
@@ -20,14 +20,20 @@
     
     <hr>
 
-    <h3>{% if search_query %}Search Results ({{ inventory | length }} found for '{{ search_query }}'){% else %}Current Stock{% endif %}</h3>
+    <h3>
+        {% if search_query %}
+            Search Results ({{ inventory | length }} found for '{{ search_query }}')
+        {% else %}
+            Current Stock ({{ inventory | length }} Cars)
+        {% endif %}
+    </h3>
 
     {% if inventory %}
         <table class="inventory-table">
             <thead>
                 <tr>
                     <th>
-                        <a href="{{ url_for('index', sort='vin', direction=next_direction, query=search_query) }}"
+                        <a href="{{ url_for('index', sort='vin', direction=next_direction if current_sort == 'vin' else 'asc', query=search_query) }}"
                            class="sort-link {% if current_sort == 'vin' %}active{% endif %}">
                             VIN 
                             {% if current_sort == 'vin' %}
@@ -95,7 +101,13 @@
             </tbody>
         </table>
     {% else %}
-        <p>No cars found in inventory{% if search_query %} matching the query '{{ search_query }}'{% endif %}.</p>
+        <p class="alert alert-warning">
+            {% if search_query %}
+                🚫 **No cars found** matching the query: **'{{ search_query }}'**.
+            {% else %}
+                ⚠️ The inventory is currently **empty**. Click "Add New Car" to begin.
+            {% endif %}
+        </p>
     {% endif %}
 
 {% endblock %}

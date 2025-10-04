@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Car Dealer Inventory{% endblock %}</title>
+    <title>{% block title %}Car Dealer Inventory{% endblock %} | Car Dealer Manager</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
 </head>
@@ -14,27 +14,30 @@
 
     <header class="navbar">
         <div class="nav-content-left">
-            <a href="{{ url_for('index') }}" class="nav-brand">Car Dealer Manager</a>
+            <a href="{{ url_for('index') }}" class="nav-brand">🚗 Car Dealer Manager</a>
         </div>
+        
         <div class="nav-content-center">
             <h1 class="nav-header">DEALERSHIP INVENTORY</h1>
         </div>
+        
         <div class="nav-content-right">
-            <nav>
-                <a href="{{ url_for('index') }}">Inventory</a>
-                <a href="{{ url_for('sold_cars') }}">Sold Cars</a>
-                <a href="{{ url_for('add_car') }}">Add Car</a> 
-                <a href="{{ url_for('sales_report') }}">Sales Report</a>
+            <nav class="main-nav">
+                <a href="{{ url_for('index') }}" title="View current stock">Inventory</a>
+                <a href="{{ url_for('sold_cars') }}" title="View vehicles already sold">Sold History</a>
+                <a href="{{ url_for('sales_report') }}" title="View aggregate sales data">Sales Report</a>
+                <a href="{{ url_for('add_car') }}" class="btn btn-nav-action" title="Add a new vehicle">➕ Add Car</a> 
             </nav>
         </div>
     </header>
 
-    <main class="container">
+    <main class="container" role="main">
+        
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
-                <div class="flash-messages-container">
+                <div class="flash-messages-container" role="alert" aria-live="polite">
                 {% for category, message in messages %}
-                    <div class="flash-message flash-{{ category }}">{{ message }}</div>
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
                 {% endfor %}
                 </div>
             {% endif %}
@@ -43,7 +46,7 @@
         {% block content %}{% endblock %}
     </main>
 
-    <footer class="footer">
+    <footer class="footer" role="contentinfo">
         <p>&copy; {{ now.year if now is defined else 2024 }} Car Dealer Manager. All Rights Reserved.</p>
         <p class="footer-contact">Contact: support@cardealerapp.com</p>
     </footer>

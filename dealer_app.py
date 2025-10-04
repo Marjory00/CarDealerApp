@@ -1,14 +1,12 @@
 # dealer_app.py
 
-# dealer_app.py
-
 
 import json
 import os
-import sys
 from datetime import datetime
 # FIX: Assuming Car is imported from a separate car.py file for clean architecture
 from car import Car 
+from typing import List, Dict, Any, Optional
 
 # --- Configuration ---
 DATA_FILE = 'cars.json'
@@ -25,10 +23,12 @@ class DealerManager:
         """Initializes the manager and loads existing data."""
         self.file_path = file_path
         self.sales_file = sales_file 
-        self.inventory = []
-        self.sales_history = [] 
+        self.inventory: List[Car] = []
+        self.sales_history: List[Dict[str, Any]] = [] 
         self._load_data()
         self._load_sales_history()
+
+    # --- Data Loading/Saving ---
 
     def _load_data(self):
         """Loads car data from the inventory JSON file."""
@@ -38,7 +38,6 @@ class DealerManager:
                     data = json.load(f)
                     for car_data in data:
                         try:
-                            # Use .get() for optional fields like 'image_url' for compatibility
                             make = car_data.get('make')
                             model = car_data.get('model')
                             year = car_data.get('year')
@@ -50,11 +49,8 @@ class DealerManager:
                             self.inventory.append(Car(make, model, year, price, vin, image_url))
                         except (TypeError, ValueError) as e:
                             print(f"Skipping corrupt inventory entry. Error: {e}")
-                # print(f"Inventory loaded successfully from {self.file_path}.")
             except (IOError, json.JSONDecodeError):
                 print("Could not read or parse inventory file. Starting with empty inventory.")
-        # else:
-            # print("Inventory file not found. Starting with empty inventory.")
     
     def _load_sales_history(self):
         """Loads sales data from the sales JSON file."""
@@ -62,11 +58,8 @@ class DealerManager:
             try:
                 with open(self.sales_file, 'r') as f:
                     self.sales_history = json.load(f)
-                # print(f"Sales history loaded successfully from {self.sales_file}.")
             except (IOError, json.JSONDecodeError):
                 print("Could not read or parse sales file. Starting with empty sales history.")
-        # else:
-            # print("Sales file not found. Starting with empty sales history.")
 
     def save_data(self):
         """Saves the current inventory to the JSON file."""
@@ -89,28 +82,50 @@ class DealerManager:
             print("Error: Could not write to sales history file.")
             return False
 
-    def get_inventory(self):
+    # --- Inventory and Search ---
+
+    def get_inventory(self) -> List[Car]:
         """Returns the full inventory list."""
         return self.inventory
     
-    def add_car(self, car):
+    def find_car_by_vin(self, vin: str) -> Optional[Car]:
+        """Helper method to find a car object by its VIN (case-insensitive)."""
+        vin = vin.strip().upper()
+        return next((car for car in self.inventory if car.vin == vin), None)
+
+    def search_cars(self, query: str) -> List[Car]:
+        """
+        FIX: Core logic now returns the list of matching cars immediately.
+        It avoids printing messages if the query is empty, making it suitable for 
+        the web app's `index()` route where an empty query shows the full list.
+        """
+        normalized_query = query.lower().strip()
+        
+        # Return full inventory if the query is empty
+        if not normalized_query:
+            return self.inventory
+            
+        results = [
+            car for car in self.inventory 
+            # Use .lower() for case-insensitive matching
+            if normalized_query in car.make.lower() or normalized_query in car.model.lower()
+        ]
+        return results
+
+    # --- CRUD Operations ---
+
+    def add_car(self, car: Car) -> bool:
         """Adds a new Car object to the inventory after checking for duplicates."""
-        if any(c.vin == car.vin for c in self.inventory):
-            # print(f"Error: Car with VIN {car.vin} already exists.")
+        if self.find_car_by_vin(car.vin):
             return False
         
         self.inventory.append(car)
         return True
 
-    def find_car_by_vin(self, vin):
-        """Helper method to find a car object by its VIN."""
-        vin = vin.strip().upper()
-        return next((car for car in self.inventory if car.vin == vin), None)
-
-    def edit_car(self, vin: str, new_price: float = None, new_year: int = None, new_image_url: str = None) -> bool:
+    def edit_car(self, vin: str, new_price: Optional[float] = None, new_year: Optional[int] = None, new_image_url: Optional[str] = None) -> bool:
         """
-        FIX: Added edit_car method. 
-        Updates the details of an existing car. Returns True on success, False otherwise.
+        Updates the details of an existing car, validating new values. 
+        Returns True on success, False otherwise.
         """
         car = self.find_car_by_vin(vin)
         if not car:
@@ -119,18 +134,21 @@ class DealerManager:
         # Attempt to update attributes with provided non-None values
         try:
             if new_price is not None:
-                car.price = float(new_price)
-                if car.price <= 0:
+                new_price = float(new_price)
+                if new_price <= 0:
                     raise ValueError("Price must be positive.")
+                car.price = new_price
             
             if new_year is not None:
-                car.year = int(new_year)
+                new_year = int(new_year)
                 current_year = datetime.now().year
-                if not (1900 <= car.year <= current_year + 2):
+                # Use Car constructor's validation range
+                if not (1900 <= new_year <= current_year + 2): 
                     raise ValueError(f"Year out of range (1900 to {current_year + 2}).")
+                car.year = new_year
             
             if new_image_url is not None:
-                 # The Car constructor handles defaulting to placeholder if empty
+                # Set URL or default placeholder
                 car.image_url = new_image_url.strip() if new_image_url.strip() else "/static/placeholder.png" 
                 
             return True
@@ -138,10 +156,10 @@ class DealerManager:
             print(f"Edit validation failed for {vin}: {e}")
             return False
 
-    def remove_car(self, vin):
+    def remove_car(self, vin: str) -> bool:
         """Removes a car from the inventory and records the sale."""
         car_to_sell = self.find_car_by_vin(vin)
-        vin = vin.strip().upper()
+        normalized_vin = vin.strip().upper()
 
         if car_to_sell:
             # 1. Record the sale
@@ -150,26 +168,26 @@ class DealerManager:
             self.sales_history.append(sale_record)
             
             # 2. Remove the car from the inventory
-            self.inventory = [car for car in self.inventory if car.vin != vin]
+            self.inventory = [car for car in self.inventory if car.vin != normalized_vin]
             
-            # print(f"Car with VIN {vin} sold and removed from inventory.")
             return True
         else:
-            # print(f"Error: Car with VIN {vin} not found.")
             return False
     
-    def get_sales_report(self):
-        """
-        FIX: Added get_sales_report to return structured data for the Flask web page.
-        """
+    # --- Reporting ---
+    
+    def get_sales_report(self) -> Dict[str, Any]:
+        """Returns structured data for the sales report."""
         total_revenue = sum(record['price'] for record in self.sales_history)
         
         return {
             'total_sold': len(self.sales_history),
             'total_revenue': total_revenue,
-            # Reverse history so newest sales are at the top (better for table display)
+            # Reverse history so newest sales are at the top
             'history': list(reversed(self.sales_history)) 
         }
+
+    # --- CLI Display Methods ---
 
     def view_sales_history(self):
         """Prints the sales history and summary to the console (CLI function)."""
@@ -184,9 +202,7 @@ class DealerManager:
         print(f"Total Revenue: ${report['total_revenue']:,.2f}")
         print("-" * 30)
 
-        # Iterate through history, showing newest first
         for i, car in enumerate(report['history']):
-             # The index i will be 0 for the newest sale
             print(f"[{i+1}]: {car['sale_date']} | {car['year']} {car['make']} {car['model']} | Price: ${car['price']:,.2f}")
         print("-" * 30)
 
@@ -198,29 +214,22 @@ class DealerManager:
 
         print("\n--- Current Inventory ---")
         for i, car in enumerate(self.inventory):
+            # Assumes Car object has a __str__ method implemented
             print(f"[{i+1}]: {car}") 
         print("-" * 25)
 
-    def search_cars(self, query):
-        """Returns and prints results for cars matching the query in make or model."""
-        query = query.lower().strip()
-        results = [
-            car for car in self.inventory 
-            if query in car.make.lower() or query in car.model.lower()
-        ]
+    def print_search_results(self, query: str):
+        """Prints the results of the search to the console (CLI function)."""
+        results = self.search_cars(query)
         
         if not results:
             print(f"\nNo cars found matching '{query}'.")
-            return [] # Return empty list for consistency with Flask app
+            return
 
-        # CLI Display (optional, since Flask app uses its own display)
         print(f"\n--- Search Results for '{query}' ({len(results)} found) ---")
         for car in results:
             print(car)
         print("-" * 35)
-        
-        return results # Return results for Flask app usage
-
 
 # --- User Interface and Main Loop (Remains largely the same for CLI) ---
 def get_user_input(prompt, data_type=str):
@@ -228,7 +237,7 @@ def get_user_input(prompt, data_type=str):
     while True:
         try:
             user_input = input(prompt).strip()
-            # Allow empty string if the expected type is string (for optional image_url)
+            # Allow empty string if the expected type is str (for optional image_url)
             if not user_input and data_type is str:
                 return ""
             if not user_input and data_type is not str:
@@ -253,6 +262,7 @@ def main():
         print("6. Save & Exit")
         print("7. Exit without Saving")
         
+        # Get integer choice, assuming the function handles validation
         choice = get_user_input("Enter your choice (1-7): ", int) 
 
         if choice == 1:
@@ -273,6 +283,7 @@ def main():
                     print(f"FAILURE: Car with VIN {vin} already exists.")
 
             except ValueError as e:
+                # Catches errors from Car constructor validation (e.g., invalid year/price)
                 print(f"Validation Error: {e}")
 
         elif choice == 2:
@@ -280,7 +291,8 @@ def main():
 
         elif choice == 3:
             query = get_user_input("Enter search query (Make or Model): ")
-            manager.search_cars(query)
+            # FIX: Call the new print_search_results CLI display wrapper
+            manager.print_search_results(query)
 
         elif choice == 4:
             vin_to_remove = get_user_input("Enter VIN of the car to remove (sell): ")
@@ -298,9 +310,9 @@ def main():
             data_ok = manager.save_data()
             sales_ok = manager.save_sales_history() 
             if data_ok and sales_ok:
-                 print("Application closed. Goodbye! 👋")
+                print("Application closed. Goodbye! 👋")
             else:
-                 print("Application closed. WARNING: Data save failure.")
+                print("Application closed. WARNING: Data save failure.")
             break
 
         elif choice == 7: 
