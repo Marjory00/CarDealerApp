@@ -2,89 +2,109 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f4f4f9;
+    background-color: #eef2f7; /* Light background */
     color: #333;
     margin: 0;
     padding: 0;
 }
 
 header {
-    background-color: #004d99; /* Deep Blue */
+    background-color: #0056b3; /* Primary Blue */
     color: white;
     padding: 20px 40px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 header h1 {
     margin: 0;
-    font-size: 2.5em;
+    font-size: 2.2em;
 }
 
 nav ul {
     list-style: none;
     padding: 0;
-    margin: 10px 0 0;
+    margin-top: 15px;
     display: flex;
-}
-
-nav ul li {
-    margin-right: 20px;
+    gap: 25px;
 }
 
 nav ul li a {
     color: white;
     text-decoration: none;
-    font-weight: bold;
+    font-weight: 500;
     transition: color 0.3s;
 }
 
 nav ul li a:hover {
-    color: #ffcc00; /* Gold/Yellow accent */
+    color: #ffcc00; /* Gold accent */
 }
 
 main {
-    padding: 20px 40px;
-    max-width: 1200px;
+    padding: 30px 40px;
+    max-width: 1300px;
     margin: 20px auto;
+}
+
+/* --- Flash Messages --- */
+.flash-messages {
+    padding: 15px 30px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    font-weight: bold;
+    border-left: 5px solid;
+}
+
+.flash-messages.success {
+    background-color: #d4edda;
+    color: #155724;
+    border-color: #28a745;
+}
+
+.flash-messages.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border-color: #dc3545;
+}
+
+/* --- Search Bar --- */
+.search-bar {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 10px;
+}
+.search-bar input[type="text"] {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+.search-bar button {
+    padding: 10px 20px;
+    background-color: #6c757d;
+}
+
+/* --- Featured Models --- */
+.featured-models {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 40px;
+    padding: 20px;
     background-color: white;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
     border-radius: 8px;
-}
-
-/* --- Landing Page Sections (index.html) --- */
-
-.welcome-section {
-    background-color: #e6f0ff; /* Light Blue */
-    padding: 30px;
-    border-radius: 8px;
-    margin-bottom: 30px;
-    border-left: 5px solid #007bff;
-}
-
-.welcome-section h2 {
-    color: #007bff;
-    margin-top: 0;
-}
-
-/* --- Models Display / Featured Models --- */
-.models-display {
-    margin-top: 30px;
-    padding-top: 20px;
-    border-top: 1px solid #ddd;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .model-card {
-    background-color: #f9f9f9;
-    border: 1px solid #eee;
+    flex: 1;
     padding: 15px;
-    margin-bottom: 15px;
+    border: 1px solid #eee;
     border-radius: 6px;
-    transition: transform 0.2s;
+    text-align: center;
 }
 
-.model-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+.model-card h3 {
+    color: #0056b3;
+    margin-top: 0;
 }
 
 /* --- Inventory Table --- */
@@ -92,22 +112,30 @@ main {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
 }
 
 .inventory-table th, .inventory-table td {
     padding: 12px 15px;
     text-align: left;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #f0f0f0;
 }
 
 .inventory-table th {
-    background-color: #f0f0f0;
-    color: #555;
+    background-color: #0056b3;
+    color: white;
     font-weight: bold;
 }
 
+.inventory-table tbody tr:nth-child(even) {
+    background-color: #f8f8f8;
+}
+
 .inventory-table tbody tr:hover {
-    background-color: #fafafa;
+    background-color: #e6f7ff;
 }
 
 .price {
@@ -116,28 +144,68 @@ main {
 }
 
 /* --- Forms and Buttons --- */
+.form-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 30px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+form label {
+    display: block;
+    margin-top: 15px;
+    font-weight: 600;
+}
+
 form input[type="text"], 
 form input[type="number"] {
     width: 100%;
     padding: 10px;
-    margin: 8px 0;
-    display: inline-block;
+    margin-top: 5px;
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
 }
 
-.btn-primary {
-    background-color: #007bff;
-    color: white;
+.btn {
     padding: 10px 20px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
     font-size: 1em;
     transition: background-color 0.3s;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
 }
 
+.btn-primary {
+    background-color: #007bff;
+    color: white;
+}
 .btn-primary:hover {
     background-color: #0056b3;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    color: white;
+}
+.btn-danger:hover {
+    background-color: #c82333;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
 }

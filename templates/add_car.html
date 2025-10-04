@@ -1,47 +1,49 @@
-{% extends "layout.html" %}
+<!-- add_car.html -->
 
-{% block title %}Add Car{% endblock %}
+
+{% extends "base.html" %}
+
+{% block title %}Add New Car{% endblock %}
 
 {% block content %}
-    <h2>Add New Vehicle to Inventory</h2>
+    <div class="form-container">
+        <h2>➕ Add New Car</h2>
 
-    {% if error %}
-        <p class="error-message">{{ error }}</p>
-    {% endif %}
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message flash-{{ category }}" role="alert" style="margin-bottom: 20px;">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
 
-    <form method="POST" action="{{ url_for('add_car_route') }}" class="form-card">
-        
-        <div class="form-group">
-            <label for="make">Make</label>
-            <input type="text" id="make" name="make" 
-                   value="{{ form_data.make if form_data else '' }}" required>
-        </div>
-        
-        <div class="form-group">
-            <label for="model">Model</label>
-            <input type="text" id="model" name="model" 
-                   value="{{ form_data.model if form_data else '' }}" required>
-        </div>
-        
-        <div class="form-group">
-            <label for="year">Year</label>
-            <input type="number" id="year" name="year" min="1950" max="2050" 
-                   value="{{ form_data.year if form_data else '' }}" required>
-        </div>
-        
-        <div class="form-group">
-            <label for="price">Price ($)</label>
-            <input type="number" id="price" name="price" step="0.01" 
-                   value="{{ form_data.price if form_data else '' }}" required>
-        </div>
-        
-        <div class="form-group">
-            <label for="vin">VIN (17 Chars)</label>
-            <input type="text" id="vin" name="vin" maxlength="17" 
-                   value="{{ form_data.vin if form_data else '' }}" required>
-        </div>
-        
-        <button type="submit" class="btn btn-primary">Add Car</button>
-        <a href="{{ url_for('index') }}" class="btn btn-secondary">Cancel</a>
-    </form>
+        <form method="POST" action="{{ url_for('add_car_route') }}">
+            
+            <label for="make">Make:</label>
+            <input type="text" id="make" name="make" value="{{ form_data.make or '' }}" required>
+
+            <label for="model">Model:</label>
+            <input type="text" id="model" name="model" value="{{ form_data.model or '' }}" required>
+            
+            <label for="vin">VIN (17 alphanumeric characters):</label>
+            <input type="text" id="vin" name="vin" value="{{ form_data.vin or '' }}" required 
+                     maxlength="17" minlength="17" pattern="[a-zA-Z0-9]{17}" 
+                     title="VIN must be exactly 17 alphanumeric characters."> 
+            
+            <label for="year">Year:</label>
+            <input type="number" id="year" name="year" value="{{ form_data.year or '' }}" required min="1900" 
+                     max="{{ max_year }}">
+
+            <label for="price">Price ($):</label>
+            <input type="number" id="price" name="price" value="{{ form_data.price or '' }}" required step="0.01" min="1">
+            
+            <label for="image_url">Image URL (Optional):</label>
+            <input type="text" id="image_url" name="image_url" value="{{ form_data.image_url or '' }}">
+
+            <button type="submit" class="btn btn-primary" style="margin-top: 20px;">Add Car to Inventory</button>
+            <a href="{{ url_for('index') }}" class="btn btn-secondary" style="margin-top: 20px; margin-left: 10px;">Cancel</a>
+        </form>
+    </div>
 {% endblock %}

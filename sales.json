@@ -4,7 +4,7 @@
         "model": "Camry",
         "year": 2023,
         "price": 28500.00,
-        "vin": "VIN23TOYOCAMRY001A",
+        "vin": "JTMDV3EE6P33001A", 
         "image_url": "car_images/toyota_camry_2023.jpg"
     },
     {
@@ -12,7 +12,7 @@
         "model": "CR-V",
         "year": 2024,
         "price": 32150.50,
-        "vin": "VIN24HONDACRV0002B",
+        "vin": "5J6YF3H42R000002B",
         "image_url": "car_images/honda_crv_2024.jpg"
     },
     {
@@ -20,23 +20,31 @@
         "model": "Mustang",
         "year": 1969,
         "price": 65000.00,
-        "vin": "VIN69FORDMUSTG0003C",
+        "vin": "9F02M4856000003C",
         "image_url": "car_images/ford_mustang_1969.jpg"
     },
     {
         "make": "Tesla",
         "model": "Model 3",
-        "year": 2022,
+        "year": 2024,
         "price": 41999.99,
-        "vin": "VIN22TESLM30000004D",
-        "image_url": "car_images/tesla_model3_2022.jpg"
+        "vin": "7SAJAGH49RF00004D",
+        "image_url": "car_images/tesla_model3_2024.jpg"
     },
     {
         "make": "BMW",
         "model": "X5",
         "year": 2021,
         "price": 55500.00,
-        "vin": "VIN21BMWX500000005E",
+        "vin": "WBAJS4C52M600005E",
         "image_url": "car_images/bmw_x5_2021.jpg"
+    },
+    {
+        "make": "Subaru",
+        "model": "Forester",
+        "year": 2022,
+        "price": 27950.00,
+        "vin": "JF2SJBAC7N300006F",
+        "image_url": "car_images/subaru_forester_2022.jpg"
     }
 ]

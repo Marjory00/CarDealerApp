@@ -1,38 +1,38 @@
+<!-- base.html -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Car Dealer Pro | {% block title %}{% endblock %}</title>
+    <title>Car Dealer Pro | {% block title %}Management{% endblock %}</title> 
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <header>
-        <div class="container">
-            <h1>Car Dealer Pro</h1>
+        <div class="container"> <h1>🚗 Car Dealer Pro</h1>
             <nav>
-                <a href="{{ url_for('index') }}">Inventory</a>
-                <a href="{{ url_for('add_car_route') }}">Add New Car</a>
-                <a href="{{ url_for('sales_history_route') }}">Sales History</a> 
+                <ul>
+                    <li><a href="{{ url_for('index') }}">Inventory</a></li>
+                    <li><a href="{{ url_for('add_car_route') }}">Add New Car</a></li> 
+                    <li><a href="{{ url_for('sales_history_route') }}">Sales History</a></li> 
+                </ul>
             </nav>
         </div>
     </header>
-
-    <main class="container">
-        
+    
+    <main class="container"> 
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
-                <div class="flash-messages-container">
+                <div class="flash-container" role="status"> 
                     {% for category, message in messages %}
-                        <div class="flash-message flash-{{ category }}">
-                            {{ message }}
-                        </div>
+                        <div class="flash-messages flash-{{ category }}">{{ message }}</div> 
                     {% endfor %}
                 </div>
             {% endif %}
         {% endwith %}
-        
+
         {% block content %}{% endblock %}
     </main>
 

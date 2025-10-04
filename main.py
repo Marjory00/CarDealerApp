@@ -1,5 +1,8 @@
 # main.py
 
+# main.py (FIXED)
+
+
 from dealer_manager import DealerManager
 from car import Car
 import sys 
@@ -18,17 +21,21 @@ def get_user_input(prompt: str, data_type: type = str) -> Optional[Any]:
             
             # Case 1: Allow skip for numeric/optional inputs
             if user_input.lower() in ['s', 'skip']:
-                 return None 
-
+                # Ensure we only return None if the data_type is non-string or if prompt indicates it's optional
+                if data_type is not str or "optional" in prompt.lower():
+                    return None 
+                
             # Case 2: Allow empty string for optional string inputs (like image_url)
             if not user_input and data_type is str and "optional" in prompt.lower():
-                 return ""
+                return ""
 
             # Case 3: Require non-empty input for standard/required type prompts
-            if not user_input and data_type is not None:
-                print("Input cannot be empty.")
-                continue
-            
+            if not user_input and data_type is not None and "optional" not in prompt.lower():
+                # If required string is empty (and not a skip command), re-prompt
+                if data_type is str: 
+                     print("Input cannot be empty for this required field.")
+                     continue
+                
             # Case 4: Cast input to required type
             return data_type(user_input)
         
@@ -62,10 +69,12 @@ def view_car_image(manager: DealerManager):
         print(f"Error: Car with VIN {vin_to_view} not found.")
         return
 
+    # Use the image_url saved on the Car object
     file_path = car.image_url
 
-    if not file_path or file_path.lower() in ["n/a", "none", ""]:
-        print(f"Error: Car {car.make} {car.model} does not have an image path saved.")
+    # Check for placeholder/empty URLs
+    if not file_path or file_path.lower() in ["n/a", "none", "", "/static/placeholder.png"]:
+        print(f"Error: Car {car.make} {car.model} does not have a local image path saved.")
         return
         
     if os.path.exists(file_path):
@@ -85,10 +94,10 @@ def view_car_image(manager: DealerManager):
             print("Please check your file associations.")
     else:
         print(f"Error: Local file not found at path: {file_path}")
-        print("Ensure the 'car_images' folder and files exist in your project root.")
+        print("Ensure the local path saved (e.g., 'car_images/car.jpg') is correct.")
 
 
-# --- Presentation/Information Functions ---
+# --- Presentation/Information Functions (Unchanged) ---
 
 def display_model_samples():
     """Displays hardcoded information about featured car models (Model Display)."""
@@ -152,7 +161,7 @@ def display_welcome_screen(manager: DealerManager):
     inventory = manager.get_inventory()
     
     print("\n=======================================================")
-    print("             🚗 WELCOME TO THE PYTHON DEALER APP 🐍       ")
+    print("      🚗 WELCOME TO THE PYTHON DEALER APP 🐍       ")
     print("=======================================================")
     
     # --- About the Platform Section ---
@@ -195,23 +204,60 @@ def run_edit_car_interface(manager: DealerManager):
         print(f"\n--- Editing Car: {car} ---")
         print("Type 's' or 'skip' to keep the current value.")
 
-        new_price = get_user_input(f"New Price (Current: ${car.price:,.2f}): ", data_type=float)
-        new_year = get_user_input(f"New Year (Current: {car.year}): ", data_type=int)
+        # 1. Get new Year (FIXED: Added missing Year input)
+        new_year_input = get_user_input(f"New Year (Current: {car.year}): ", data_type=int)
+        new_year = new_year_input if new_year_input is not None else None
 
-        if new_price is not None or new_year is not None:
-            # Attempt the edit, which includes re-validation
-            if manager.edit_car(vin_to_edit, new_price=new_price, new_year=new_year):
-                 print(f"Successfully updated car with VIN {vin_to_edit}.")
-                 # Check save status after successful edit for robustness
-                 if not manager.save_data():
+        # 2. Get new Price
+        new_price_input = get_user_input(f"New Price (Current: ${car.price:,.2f}): ", data_type=float)
+        new_price = new_price_input if new_price_input is not None else None
+
+        # 3. Get new Image URL
+        new_image_input = get_user_input(f"New Image URL (Current: {car.image_url}, optional): ", data_type=str)
+        new_image_url = new_image_input if new_image_input is not None else None
+
+        # Only proceed if any change was provided
+        if new_price is not None or new_image_url is not None or new_year is not None:
+            # Call the correct edit_car signature from dealer_manager.py
+            if manager.edit_car(vin_to_edit, 
+                                new_price=new_price, 
+                                new_image_url=new_image_url, 
+                                new_year=new_year): # Pass new_year
+                print(f"Successfully updated car with VIN {vin_to_edit}.")
+                if not manager.save_data():
                     print("⚠️ WARNING: Inventory save failed after edit. Data may be lost.")
+            else:
+                # The dealer_manager edit_car returns False on validation failure (e.g., negative price, invalid year)
+                print("Edit failed: Check validation for Price (must be positive) and Year (must be valid range).")
         else:
             print("No changes made.")
 
     except ValueError as e:
-        print(f"Edit failed: {e}")
+        print(f"Edit failed due to input format: {e}")
     except Exception as e:
         print(f"An unexpected error occurred during the edit: {e}")
+
+
+def display_sales_report(manager: DealerManager):
+    """Displays the sales history and summary report."""
+    report = manager.get_sales_report()
+    history = report['history']
+    
+    print("\n==============================")
+    print("💰 SALES HISTORY REPORT 💰")
+    print(f"Total Cars Sold: {report['total_sold']}")
+    print(f"Total Revenue: ${report['total_revenue']:,.2f}")
+    print("==============================")
+    
+    if not history:
+        print("The sales history is currently empty.")
+        return
+        
+    for sale in history:
+        # Format the sale price and display
+        price_formatted = f"${sale['price']:,.2f}"
+        print(f"[{sale['sale_date'].split(' ')[0]}] | {sale['year']} {sale['make']} {sale['model']} | Price: {price_formatted} | VIN: {sale['vin']}")
+    print("-" * 30)
 
 
 def main():
@@ -247,12 +293,19 @@ def main():
                 vin = get_user_input("VIN (17 characters): ").upper()
                 year = get_user_input("Year (e.g., 2022): ", int)
                 price = get_user_input("Price (e.g., 35000.00): ", float)
+                # get_user_input returns None if 's' is entered, or "" if nothing is entered 
                 image_url = get_user_input("Image URL (optional, e.g., car_images/car.jpg): ", data_type=str)
 
-                new_car = Car(make, model, year, price, vin, image_url=image_url) 
-                manager.add_car(new_car)
+                # FIX: Handle the case where image_url is None (skip) by providing an empty string, 
+                # which the Car constructor handles correctly.
+                new_car = Car(make, model, year, price, vin, image_url=image_url if image_url is not None else "")
+                
+                if manager.add_car(new_car):
+                    print(f"\nSUCCESS: {new_car.make} {new_car.model} added to inventory.")
+                else:
+                    print(f"\nERROR: Car with VIN {new_car.vin} already exists in inventory.")
             except ValueError as e:
-                print(f"Could not create car object due to input error: {e}")
+                print(f"\nCould not create car object due to input error: {e}")
 
         elif choice == 2:
             view_inventory(manager)
@@ -270,23 +323,27 @@ def main():
                     print(car)
                 print("==============================")
             else:
-                 print(f"No results found for '{query}'.")
+                print(f"\nNo results found for '{query}'.")
 
         elif choice == 4:
             vin_to_remove = get_user_input("Enter VIN of the car to remove (sell): ").upper()
             if manager.remove_car(vin_to_remove):
+                print(f"\nSUCCESS: Car with VIN {vin_to_remove} sold and removed from inventory.")
+                
                 # Save check after successful sale
                 inventory_ok = manager.save_data()
                 sales_ok = manager.save_sales_history()
                 
                 if not inventory_ok or not sales_ok:
                     print("⚠️ WARNING: One or both files failed to save after sale. Data loss possible.")
+            else:
+                print(f"\nERROR: Car with VIN {vin_to_remove} not found.")
 
         elif choice == 5:
             run_edit_car_interface(manager)
 
         elif choice == 6: 
-            manager.view_sales_history()
+            display_sales_report(manager)
 
         elif choice == 7:
             view_car_image(manager)

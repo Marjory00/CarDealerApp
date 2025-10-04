@@ -1,39 +1,81 @@
+<!-- index.html -->
+
 {% extends "base.html" %}
 
+{% block title %}Inventory Overview{% endblock %}
+
 {% block content %}
-    <div class="welcome-section">
-        <h2>🚗 Platform Overview</h2>
-        <p>This is your comprehensive web-based Car Inventory and Sales Manager, powered by Flask and Python.</p>
-        <p>Currently managing <strong>{{ total_cars }}</strong> cars in stock.</p>
-    </div>
+    <h2>Inventory Overview (Total: {{ inventory | length }} Cars)</h2>
 
-    <div class="models-display">
-        <h2>✨ Featured Models Showcase</h2>
-        <div class="model-list">
-            {% for model in featured_models %}
-            <div class="model-card">
-                <h3>{{ model.name }}</h3>
-                <p><strong>Engine:</strong> {{ model.engine }}</p>
-                <p><strong>Status:</strong> {{ model.status }}</p>
-                <p><small>(Image placeholder here)</small></p>
-            </div>
-            {% endfor %}
-        </div>
+    <div class="search-bar">
+        <form method="GET" action="{{ url_for('index') }}" style="display: flex; flex-grow: 1; gap: 10px;">
+            <input type="text" name="query" placeholder="Search by Make or Model..." value="{{ search_query }}" required>
+            <button type="submit" class="btn btn-primary">Search</button>
+            {% if search_query %}
+                <a href="{{ url_for('index') }}" class="btn btn-secondary">Clear Search</a>
+            {% endif %}
+        </form>
     </div>
-
+    
     <hr>
 
-    <h2>📦 Current Inventory List</h2>
+    <h3>{% if search_query %}Search Results ({{ inventory | length }} found for '{{ search_query }}'){% else %}Current Stock{% endif %}</h3>
+
     {% if inventory %}
         <table class="inventory-table">
             <thead>
                 <tr>
-                    <th>VIN</th>
-                    <th>Year</th>
-                    <th>Make</th>
-                    <th>Model</th>
-                    <th>Price</th>
-                    <th>Image URL</th>
+                    <th>
+                        <a href="{{ url_for('index', sort='vin', direction=next_direction, query=search_query) }}"
+                           class="sort-link {% if current_sort == 'vin' %}active{% endif %}">
+                            VIN 
+                            {% if current_sort == 'vin' %}
+                                {% if current_direction == 'asc' %} ▲ {% else %} ▼ {% endif %}
+                            {% endif %}
+                        </a>
+                    </th>
+                    
+                    <th>
+                        <a href="{{ url_for('index', sort='year', direction=next_direction if current_sort == 'year' else 'asc', query=search_query) }}"
+                           class="sort-link {% if current_sort == 'year' %}active{% endif %}">
+                            Year 
+                            {% if current_sort == 'year' %}
+                                {% if current_direction == 'asc' %} ▲ {% else %} ▼ {% endif %}
+                            {% endif %}
+                        </a>
+                    </th>
+                    
+                    <th>
+                        <a href="{{ url_for('index', sort='make', direction=next_direction if current_sort == 'make' else 'asc', query=search_query) }}"
+                           class="sort-link {% if current_sort == 'make' %}active{% endif %}">
+                            Make 
+                            {% if current_sort == 'make' %}
+                                {% if current_direction == 'asc' %} ▲ {% else %} ▼ {% endif %}
+                            {% endif %}
+                        </a>
+                    </th>
+                    
+                    <th>
+                        <a href="{{ url_for('index', sort='model', direction=next_direction if current_sort == 'model' else 'asc', query=search_query) }}"
+                           class="sort-link {% if current_sort == 'model' %}active{% endif %}">
+                            Model 
+                            {% if current_sort == 'model' %}
+                                {% if current_direction == 'asc' %} ▲ {% else %} ▼ {% endif %}
+                            {% endif %}
+                        </a>
+                    </th>
+                    
+                    <th>
+                        <a href="{{ url_for('index', sort='price', direction=next_direction if current_sort == 'price' else 'asc', query=search_query) }}"
+                           class="sort-link {% if current_sort == 'price' %}active{% endif %}">
+                            Price 
+                            {% if current_sort == 'price' %}
+                                {% if current_direction == 'asc' %} ▲ {% else %} ▼ {% endif %}
+                            {% endif %}
+                        </a>
+                    </th>
+                    
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -44,13 +86,15 @@
                     <td>{{ car.make }}</td>
                     <td>{{ car.model }}</td>
                     <td class="price">${{ "{:,.2f}".format(car.price) }}</td>
-                    <td><small>{{ car.image_url }}</small></td>
+                    <td>
+                        <a href="{{ url_for('car_detail_route', vin=car.vin) }}" class="btn btn-primary" style="padding: 5px 10px;">Details</a>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     {% else %}
-        <p>The inventory is currently empty. Use the "Add Car" link to populate the stock.</p>
+        <p>No cars found in inventory{% if search_query %} matching the query '{{ search_query }}'{% endif %}.</p>
     {% endif %}
 
 {% endblock %}

@@ -1,0 +1,51 @@
+<!-- sales.html -->
+
+{% extends "base.html" %}
+
+{% block title %}Sales History Report{% endblock %} {% block content %}
+    <h2>💰 Sales History Report</h2>
+
+    <div class="report-summary"> 
+        <div class="model-card" style="flex: none; width: 300px; border-left: 5px solid #0056b3;">
+            <h3>Total Cars Sold</h3>
+            <p style="font-size: 2em; color: #0056b3; margin: 5px 0;">{{ sales_report.total_sold }}</p>
+        </div>
+        <div class="model-card" style="flex: none; width: 300px; border-left: 5px solid #28a745;">
+            <h3>Total Revenue</h3>
+            <p style="font-size: 2em; color: #28a745; margin: 5px 0;">${{ "{:,.2f}".format(sales_report.total_revenue) }}</p>
+        </div>
+    </div>
+
+    <hr>
+
+    <h3>Sales Log</h3>
+    {% if sales_report.history %}
+        <table class="inventory-table">
+            <thead>
+                <tr>
+                    <th>Sale Date</th>
+                    <th>Year</th>
+                    <th>Make</th>
+                    <th>Model</th>
+                    <th>Sale Price</th>
+                    <th>VIN</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sale in sales_report.history %}
+                <tr>
+                    <td>{{ sale.sale_date }}</td>
+                    <td>{{ sale.year }}</td>
+                    <td>{{ sale.make }}</td>
+                    <td>{{ sale.model }}</td>
+                    <td class="price">${{ "{:,.2f}".format(sale.price) }}</td>
+                    <td>{{ sale.vin }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No sales have been recorded yet.</p>
+    {% endif %}
+
+{% endblock %}
