@@ -1,5 +1,8 @@
 /* static/style.css */
 
+
+/* static/style.css */
+
 /* === GLOBAL RESET & BASE === */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -7,40 +10,38 @@ body {
     color: #333;
     margin: 0;
     padding: 0;
-      /* === STICKY FOOTER FIX: Ensures body spans full viewport height === */
+    line-height: 1.6;
+    /* STICKY FOOTER FIX: Ensures body spans full viewport height */
     display: flex;
     flex-direction: column;
     min-height: 100vh; 
 }
 
-/* Removes the default underline from all links */
+/* Base link styling */
 a {
     text-decoration: none;
-    color: #007bff; /* A default color for general links */
+    color: #007bff; /* Primary Blue for general links */
     transition: color 0.3s, text-decoration 0.3s;
 }
 
-/* Style for when the mouse hovers over a link */
 a:hover {
     text-decoration: underline; 
-    color: #0056b3; /* Darker color on hover */
+    color: #0056b3; 
 }
 
-/* === HEADER / NAVBAR LAYOUT FIXES === */
+/* === HEADER / NAVBAR LAYOUT === */
 .navbar {
-    background-color: #0056b3; /* Primary Blue */
+    background-color: #0056b3; 
     color: white;
-    padding: 20px 40px;
+    padding: 15px 40px; /* Slightly reduced top/bottom padding */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    
-    /* Harmonizing the header layout */
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
 .nav-content-center {
-    flex-grow: 1; /* Allows the header text to take available space */
+    flex-grow: 1; 
     text-align: center;
 }
 
@@ -48,52 +49,62 @@ a:hover {
     margin: 0;
     font-size: 1.8em;
     font-weight: 300;
+    /* Ensure the header text is slightly visible and not competing too much */
+    color: rgba(255, 255, 255, 0.9); 
 }
 
-/* Nav Brand Link (Left) */
 .nav-brand {
     font-size: 1.4em;
     font-weight: bold;
-    color: white !important; /* Forces color to white */
-    text-decoration: none !important;
+    color: white;
 }
 
 .nav-brand:hover {
-    color: #ffc107 !important; /* Yellow hover */
-    /* FIX: Ensure no underline even on hover */
-    text-decoration: none !important; 
+    color: #ffc107; 
 }
 
 /* Nav Links (Right) */
-.nav-content-right nav {
+.main-nav {
     display: flex;
     gap: 20px;
     align-items: center;
 }
 
-/* Targets all links inside the header navigation */
-.navbar a {
+.main-nav a {
     color: white; 
     text-decoration: none;
     font-weight: 500;
     padding: 5px 0;
+    transition: color 0.2s;
 }
 
-.navbar a:hover {
-    color: #ffc107; /* Yellow color on hover */
-    /* FIX: Set text-decoration to none to remove underline on hover */
-    text-decoration: none; 
+.main-nav a:hover {
+    color: #ffc107; 
+    text-decoration: none; /* FIX: Ensure no underline here */
+}
+
+/* Primary Action Button in Nav */
+.btn-nav-action {
+    background-color: #28a745;
+    border: 1px solid #28a745;
+    padding: 8px 15px;
+    border-radius: 4px;
+    margin-left: 20px;
+    font-weight: bold;
+    color: white;
+}
+.btn-nav-action:hover {
+    background-color: #1e7e34;
+    color: white;
 }
 
 
 /* === MAIN CONTENT & INVENTORY === */
-/* Use the .container class from base.html for main content layout */
 .container {
     padding: 30px 40px;
     max-width: 1300px;
     margin: 20px auto;
-    /* FIX: Flex grow to push the footer down */
-    flex-grow: 1; 
+    flex-grow: 1; /* Pushes the footer down */
 }
 
 .page-title {
@@ -124,6 +135,8 @@ a:hover {
     background-color: #0056b3;
     color: white;
     font-weight: bold;
+    cursor: pointer;
+    white-space: nowrap; /* Prevents headers from wrapping */
 }
 
 .inventory-table tbody tr:nth-child(even) {
@@ -136,89 +149,107 @@ a:hover {
 
 .price {
     font-weight: bold;
-    color: #28a745; /* Green for prices */
+    color: #28a745; 
 }
 
 
-/* === FLASH MESSAGES FIX === */
-/* Correctly targets the classes used in base.html */
+/* --- SORTING --- */
+.sort-link {
+    color: inherit;
+    text-decoration: none;
+    display: block;
+}
+.sort-link:hover {
+    color: #ffc107;
+    text-decoration: none;
+}
+
+
+/* === ALERTS / FLASH MESSAGES FIX === */
 .flash-messages-container {
     margin-bottom: 20px;
 }
-
-.flash-message {
+/* FIX: Standardizing class name from .flash-message to .alert */
+.alert { 
     padding: 15px;
     margin-bottom: 10px;
     border-radius: 5px;
-    font-weight: bold;
+    font-weight: 600;
     border-left: 5px solid;
 }
-
-.flash-success {
+/* FIX: Standardizing class name prefixes */
+.alert-success {
     background-color: #d4edda;
     color: #155724;
     border-color: #28a745;
 }
 
-.flash-danger {
+.alert-danger {
     background-color: #f8d7da;
     color: #721c24;
     border-color: #dc3545;
 }
 
+.alert-info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border-color: #17a2b8;
+}
 
-/* === FORMS AND BUTTONS === */
+.alert-warning {
+    background-color: #fff3cd;
+    color: #856404;
+    border-color: #ffc107;
+}
+
+
+/* === FORMS (ADD/EDIT) === */
 .form-container {
-    /* Form container is now wider */
     max-width: 750px;
-    margin: 30px auto; /* Center forms below the main content area */
+    margin: 30px auto; 
     padding: 30px;
     background-color: white;
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-/* Styles for the form elements within the container */
-.form-container form {
-    display: block; /* Use block display and 100% width to ensure it fills the container. */
-    /* display: grid; */
-    width: 100%;
-    /* FIX: Explicitly set a single, full-width column for all fields */
-    grid-template-columns: 1fr;
-    /* Increased vertical spacing between form groups */
-    gap: 15px; 
+.form-group {
+    /* FIX: Added form-group styling for vertical spacing and label alignment */
+    margin-bottom: 20px;
 }
 
-form label {
+.form-group label {
     display: block;
-     /* Use margin-top to space the field groups */
-    margin-top: 15px; 
-   /* margin-top: 5px; /* Reduced margin-top here */
+    margin-bottom: 5px;
     font-weight: 600;
 }
 
-form input[type="text"], 
-form input[type="number"],
-form input[type="url"] { /* Added url type for image_url */
-        /* Input must be 100% of the form's width */
+.form-group input[type="text"], 
+.form-group input[type="number"],
+.form-group input[type="url"] { 
     width: 100%;
-    /* Increased padding for a slightly taller field */
-    padding: 12px; 
+    padding: 10px;
     margin-top: 5px;
     border: 1px solid #ccc;
     border-radius: 4px;
-        /* This ensures padding doesn't push the input wider than 100% */
-    box-sizing: border-box;
+    box-sizing: border-box; /* Crucial for full width */
     font-size: 1rem;
 }
 
-form input:focus {
+.form-group input:focus {
     border-color: #007bff;
     box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
     outline: none;
 }
 
-/* --- Buttons --- */
+.form-text {
+    display: block;
+    font-size: 0.85em;
+    color: #6c757d;
+    margin-top: 5px;
+}
+
+/* --- Buttons (Form Specific) --- */
 .btn {
     padding: 10px 20px;
     border: none;
@@ -255,34 +286,60 @@ form input:focus {
     background-color: #5a6268;
 }
 
-.action-buttons {
+.form-actions, .action-buttons {
     display: flex;
     gap: 10px;
     margin-top: 20px;
 }
 
 
+/* === CAR DETAIL VIEW === */
+.specs-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px 30px;
+    padding: 15px 0;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+}
+
+.car-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* === SALES REPORT VIEW === */
+.summary-card {
+    background: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    flex: 1; /* Allows cards to distribute space evenly */
+    min-width: 250px;
+}
+
+.report-summary {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    margin-bottom: 30px;
+}
+
+/* Specific border colors used in sales.html */
+.summary-card[style*="#0056b3"] { border-left-color: #0056b3 !important; }
+.summary-card[style*="#28a745"] { border-left-color: #28a745 !important; }
+.summary-card[style*="#ffc107"] { border-left-color: #ffc107 !important; }
+
+
 /* === FOOTER === */
 .footer {
-    background-color: #343a40; /* Dark gray */
-    color: #f8f9fa; /* Light text */
+    background-color: #343a40; 
+    color: #f8f9fa; 
     text-align: center;
     padding: 20px 0;
     font-size: 0.9em;
-}
-
-.footer-contact {
-    margin-top: 5px;
-}
-
-/* Targets links in the footer section */
-.footer a {
-    color: #ccc; 
-    text-decoration: none;
-    margin: 0 10px;
-}
-
-.footer a:hover {
-    color: white;
-    text-decoration: underline;
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
 }
