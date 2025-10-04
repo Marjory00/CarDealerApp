@@ -40,27 +40,54 @@ a:hover {
     align-items: center;
 }
 
+/* Style the container for the center alignment */
 .nav-content-center {
+    /* Ensures the title is centered in the space */
     flex-grow: 1; 
     text-align: center;
 }
 
+/* Style the Inventory Header Title (h1) */
 .nav-header {
+    /* Large, bold, and slightly spaced text */
+    font-size: 1.9em; /* Make it significantly larger */
+    font-weight: 850; /* Extra bold */
+     letter-spacing: 3px; /* Significant spacing for a premium feel */
+     /* before was letter-spacing: 2px; */
+
+   /* before it was:  /* Change the color to contrast with the dark background 
+    color: #ffd700; /* Gold/Yellow, often used for premium/dealer themes */
+
+    /* Color and Contrast */
+    /* Assuming a dark navbar; use a bright, attention-grabbing color like a yellow/gold */
+    color: #ffc107; /* A bright, standard Bootstrap yellow/gold */
+   
+    /* Add a subtle text shadow for depth */
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7); /* Stronger shadow for depth */
+    /* before it was: 
+     /* Add a subtle text shadow for depth *
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5); 
+   */ 
+    /* Ensure no default margin pushes it around */
     margin: 0;
-    font-size: 1.8em;
-    font-weight: 300;
-    /* Ensure the header text is slightly visible and not competing too much */
-    color: rgba(255, 255, 255, 0.9); 
+    padding: 5px 0; /* Add a little vertical padding */
+    
+    /* Optional: Convert to all caps if not already done in HTML */
+    text-transform: uppercase; 
 }
+
 
 .nav-brand {
     font-size: 1.4em;
+    /* Removes the underline for the title link */
+    text-decoration: none; 
     font-weight: bold;
     color: white;
 }
 
 .nav-brand:hover {
     color: #ffc107; 
+    text-decoration: none;
 }
 
 /* Nav Links (Right) */

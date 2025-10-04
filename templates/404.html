@@ -1,0 +1,17 @@
+
+<!-- 404.html -->
+
+{% extends "base.html" %}
+
+{% block title %}Page Not Found - 404{% endblock %} 
+
+{% block content %}
+    <div class="container" style="text-align: center; margin-top: 50px;">
+        <h1 style="font-size: 5em; color: #dc3545;">404</h1>
+        <h2 style="color: #0056b3;">Page Not Found</h2>
+        <p style="font-size: 1.2em;">The vehicle or page you requested could not be located.</p>
+        <p>
+            <a href="{{ url_for('index') }}" class="btn btn-secondary">Go back to Inventory</a>
+        </p>
+    </div>
+{% endblock %}
