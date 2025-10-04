@@ -1,13 +1,43 @@
-# Python bytecode and cache
+
+# .gitignore
+
+# ------------------------------------
+# 1. PYTHON ARTIFACTS
+# ------------------------------------
+# Bytecode and runtime cache
 __pycache__/
 *.pyc
 
-# Data file (keep local test data off GitHub)
-cars.json
-
-# Environment files
-.env
+# Virtual Environment
 venv/
+.env
 
-# VS Code settings (optional, but good practice)
+# ------------------------------------
+# 2. APPLICATION DATA
+# ------------------------------------
+# Data file (keep local test data off GitHub)
+# This prevents your dealer inventory data from being committed.
+cars.json
+web_app.py
+add_car.html
+main.py
+app.py
+
+# If you use a separate file for your Flask secret key or database connection strings
+# app_secrets.py
+config_local.py
+*.key
+*.pem
+
+# secrets.py (PROTECTED)
+FLASK_SECRET_KEY = 'your_strong_secret_key'
+
+# ------------------------------------
+# 3. EDITOR/IDE FILES
+# ------------------------------------
+# VS Code Settings
 .vscode/
+
+# macOS files
+.DS_Store
+```

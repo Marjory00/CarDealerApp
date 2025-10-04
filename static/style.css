@@ -1,138 +1,106 @@
 /* static/style.css */
 
+/* === GLOBAL RESET & BASE === */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #eef2f7; /* Light background */
     color: #333;
     margin: 0;
     padding: 0;
+      /* === STICKY FOOTER FIX: Ensures body spans full viewport height === */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; 
 }
 
-header {
+/* Removes the default underline from all links */
+a {
+    text-decoration: none;
+    color: #007bff; /* A default color for general links */
+    transition: color 0.3s, text-decoration 0.3s;
+}
+
+/* Style for when the mouse hovers over a link */
+a:hover {
+    text-decoration: underline; 
+    color: #0056b3; /* Darker color on hover */
+}
+
+/* === HEADER / NAVBAR LAYOUT FIXES === */
+.navbar {
     background-color: #0056b3; /* Primary Blue */
     color: white;
     padding: 20px 40px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-header h1 {
-    margin: 0;
-    font-size: 2.2em;
-}
-
-/* Targets links inside the main navigation area */
-header nav a {
-    color: white; /* Example: makes links white if the header background is dark */
-    padding: 0 15px; /* Adds spacing between links */
-    font-weight: bold;
-}
-
-header nav a:hover {
-    color: #ffc107; /* Example: yellow color on hover */
-}
-
-
-header a {
-    text-decoration: none !important; /* Forces the underline off */
-    color: white; /* Example color */
-}
-
-
-/* Targets links in the footer section */
-footer a {
-    color: #ccc; /* Example: light grey for a dark footer */
-    margin: 0 10px;
-}
-
-footer a:hover {
-    color: white;
-}
-
-nav ul {
-    list-style: none;
-    padding: 0;
-    margin-top: 15px;
+    
+    /* Harmonizing the header layout */
     display: flex;
-    gap: 25px;
+    justify-content: space-between;
+    align-items: center;
 }
 
-nav ul li a {
-    color: white;
-    text-decoration: none;
-    font-weight: 500;
-    transition: color 0.3s;
-}
-
-nav ul li a:hover {
-    color: #ffcc00; /* Gold accent */
-}
-
-main {
-    padding: 30px 40px;
-    max-width: 1300px;
-    margin: 20px auto;
-}
-
-/* --- Flash Messages --- */
-.flash-messages {
-    padding: 15px 30px;
-    margin-bottom: 20px;
-    border-radius: 5px;
-    font-weight: bold;
-    border-left: 5px solid;
-}
-
-.flash-messages.success {
-    background-color: #d4edda;
-    color: #155724;
-    border-color: #28a745;
-}
-
-.flash-messages.error {
-    background-color: #f8d7da;
-    color: #721c24;
-    border-color: #dc3545;
-}
-
-/* --- Search Bar --- */
-.search-bar {
-    margin-bottom: 20px;
-    display: flex;
-    gap: 10px;
-}
-.search-bar input[type="text"] {
-    flex-grow: 1;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-.search-bar button {
-    padding: 10px 20px;
-    background-color: #6c757d;
-}
-
-/* --- Featured Models --- */
-.featured-models {
-    display: flex;
-    gap: 20px;
-    margin-bottom: 40px;
-    padding: 20px;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-.model-card {
-    flex: 1;
-    padding: 15px;
-    border: 1px solid #eee;
-    border-radius: 6px;
+.nav-content-center {
+    flex-grow: 1; /* Allows the header text to take available space */
     text-align: center;
 }
 
-.model-card h3 {
+.nav-header {
+    margin: 0;
+    font-size: 1.8em;
+    font-weight: 300;
+}
+
+/* Nav Brand Link (Left) */
+.nav-brand {
+    font-size: 1.4em;
+    font-weight: bold;
+    color: white !important; /* Forces color to white */
+    text-decoration: none !important;
+}
+
+.nav-brand:hover {
+    color: #ffc107 !important; /* Yellow hover */
+    /* FIX: Ensure no underline even on hover */
+    text-decoration: none !important; 
+}
+
+/* Nav Links (Right) */
+.nav-content-right nav {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+/* Targets all links inside the header navigation */
+.navbar a {
+    color: white; 
+    text-decoration: none;
+    font-weight: 500;
+    padding: 5px 0;
+}
+
+.navbar a:hover {
+    color: #ffc107; /* Yellow color on hover */
+    /* FIX: Set text-decoration to none to remove underline on hover */
+    text-decoration: none; 
+}
+
+
+/* === MAIN CONTENT & INVENTORY === */
+/* Use the .container class from base.html for main content layout */
+.container {
+    padding: 30px 40px;
+    max-width: 1300px;
+    margin: 20px auto;
+    /* FIX: Flex grow to push the footer down */
+    flex-grow: 1; 
+}
+
+.page-title {
     color: #0056b3;
-    margin-top: 0;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 10px;
+    margin-bottom: 25px;
 }
 
 /* --- Inventory Table --- */
@@ -171,32 +139,86 @@ main {
     color: #28a745; /* Green for prices */
 }
 
-/* --- Forms and Buttons --- */
+
+/* === FLASH MESSAGES FIX === */
+/* Correctly targets the classes used in base.html */
+.flash-messages-container {
+    margin-bottom: 20px;
+}
+
+.flash-message {
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    font-weight: bold;
+    border-left: 5px solid;
+}
+
+.flash-success {
+    background-color: #d4edda;
+    color: #155724;
+    border-color: #28a745;
+}
+
+.flash-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    border-color: #dc3545;
+}
+
+
+/* === FORMS AND BUTTONS === */
 .form-container {
-    max-width: 600px;
-    margin: 0 auto;
+    /* Form container is now wider */
+    max-width: 750px;
+    margin: 30px auto; /* Center forms below the main content area */
     padding: 30px;
     background-color: white;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Styles for the form elements within the container */
+.form-container form {
+    display: block; /* Use block display and 100% width to ensure it fills the container. */
+    /* display: grid; */
+    width: 100%;
+    /* FIX: Explicitly set a single, full-width column for all fields */
+    grid-template-columns: 1fr;
+    /* Increased vertical spacing between form groups */
+    gap: 15px; 
 }
 
 form label {
     display: block;
-    margin-top: 15px;
+     /* Use margin-top to space the field groups */
+    margin-top: 15px; 
+   /* margin-top: 5px; /* Reduced margin-top here */
     font-weight: 600;
 }
 
 form input[type="text"], 
-form input[type="number"] {
+form input[type="number"],
+form input[type="url"] { /* Added url type for image_url */
+        /* Input must be 100% of the form's width */
     width: 100%;
-    padding: 10px;
+    /* Increased padding for a slightly taller field */
+    padding: 12px; 
     margin-top: 5px;
     border: 1px solid #ccc;
     border-radius: 4px;
+        /* This ensures padding doesn't push the input wider than 100% */
     box-sizing: border-box;
+    font-size: 1rem;
 }
 
+form input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    outline: none;
+}
+
+/* --- Buttons --- */
 .btn {
     padding: 10px 20px;
     border: none;
@@ -236,16 +258,31 @@ form input[type="number"] {
 .action-buttons {
     display: flex;
     gap: 10px;
+    margin-top: 20px;
 }
 
-/* Removes the default underline from all links */
-a {
+
+/* === FOOTER === */
+.footer {
+    background-color: #343a40; /* Dark gray */
+    color: #f8f9fa; /* Light text */
+    text-align: center;
+    padding: 20px 0;
+    font-size: 0.9em;
+}
+
+.footer-contact {
+    margin-top: 5px;
+}
+
+/* Targets links in the footer section */
+.footer a {
+    color: #ccc; 
     text-decoration: none;
-    color: #007bff; /* A default color for general links */
+    margin: 0 10px;
 }
 
-/* Style for when the mouse hovers over a link */
-a:hover {
-    text-decoration: underline; /* Optional: adds underline back on hover */
-    color: #0056b3; /* Darker color on hover */
+.footer a:hover {
+    color: white;
+    text-decoration: underline;
 }
