@@ -91,38 +91,60 @@ a:hover {
 }
 
 /* Nav Links (Right) */
+
 .main-nav {
+    /* Remove default underline */
+    text-decoration: none; 
     display: flex;
     gap: 20px;
     align-items: center;
-}
+    }
 
+    /* General styling for the navigation links container */
 .main-nav a {
-    color: white; 
-    text-decoration: none;
-    font-weight: 500;
+    /* Set base link color (e.g., a light gray for good contrast) */
+    color: #fcfcfc; 
+     /* Spacing between links */
+    margin-left: 15px;
+    padding: 5px 0; 
+
+    text-decoration: none;  /* Remove default underline */
+    font-weight: 600;
     padding: 5px 0;
-    transition: color 0.2s;
+     /* Add a transition for smooth hover effects */
+    transition: color 0.3s ease, border-bottom 0.3s ease; 
+
 }
 
-.main-nav a:hover {
+/* Hover/Focus State Styling */
+.main-nav a:hover,
+.main-nav a:focus {
+    /* Change color to match the main title (e.g., the gold color used earlier) */
     color: #ffc107; 
     text-decoration: none; /* FIX: Ensure no underline here */
+     /* Optional: Add a subtle bottom border for a modern indicator */
+    border-bottom: 2px solid #ffc107;
 }
 
 /* Primary Action Button in Nav */
+/* Styling for the special 'Add Car' button/link */
 .btn-nav-action {
-    background-color: #28a745;
-    border: 1px solid #28a745;
-    padding: 8px 15px;
-    border-radius: 4px;
-    margin-left: 20px;
-    font-weight: bold;
-    color: white;
+    /* Reset background and text color to make it stand out */
+    background-color: #007bff; /* A nice blue background */
+    color: white !important; /* Force white text color */
+    padding: 8px 25px;  /* FIX: Increased horizontal padding (the second value) from 15px to 25px */
+    border-radius: 6px;
+     font-weight: bold;
+    /* Remove the bottom border/color change from the general hover rule */
+    border: none !important; 
 }
+
+
+/* Hover for the Add Car button */
 .btn-nav-action:hover {
-    background-color: #1e7e34;
-    color: white;
+    background-color: #0ca50c; /* Darker blue on hover */
+    color: white !important;
+    border: none !important;
 }
 
 

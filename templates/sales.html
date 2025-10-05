@@ -6,7 +6,12 @@
 {% block title %}Sales History Report{% endblock %} 
 
 {% block content %}
-    <h2>💰 Sales History Report</h2>
+    <h2 class="page-title-with-icon">
+        <img src="{{ url_for('static', filename='images/sales1.png') }}" 
+             alt="Money Bag Icon" 
+             style="height: 35px; vertical-align: middle; margin-right: 10px;">
+        SALES HISTORY REPORT
+    </h2>
 
     <div class="action-buttons" style="margin-bottom: 20px;">
         <a href="{{ url_for('index') }}" class="btn btn-secondary">← Back to Current Inventory</a>
@@ -58,7 +63,7 @@
                 <tbody>
                     {% for sale in report.history %}
                     <tr>
-                        <td>{{ sale.sale_date.strftime('%Y-%m-%d') if sale.sale_date else 'N/A' }}</td>
+                        <td>{{ sale.sale_date.split('T')[0] if sale.sale_date else 'N/A' }}</td>
                         <td>{{ sale.year }}</td>
                         <td>{{ sale.make }}</td>
                         <td>{{ sale.model }}</td>

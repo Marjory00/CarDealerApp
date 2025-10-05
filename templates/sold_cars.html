@@ -1,19 +1,22 @@
 <!-- sold_cars.html -->
 
-
 {% extends "base.html" %}
 
-{% block title %}Sold Car History Report{% endblock %}
+{% block title %}Sold Vehicle History{% endblock %} 
 
 {% block content %}
-    <h2 class="page-title">💰 Sold Inventory ({{ cars | length }} Vehicles)</h2>
+    <div class="page-header">
+        <h2 class="page-title-with-icon">
+            <img src="{{ url_for('static', filename='images/sold-cars.png') }}" 
+                 alt="Sold Item Icon" 
+                 style="height: 35px; vertical-align: middle; margin-right: 10px;">
+            SOLD VEHICLE HISTORY
+        </h2>
+    </div>
 
     <div class="action-buttons" style="margin-bottom: 20px;">
         <a href="{{ url_for('index') }}" class="btn btn-secondary">← Back to Current Inventory</a>
-        {# You might also add a link to the detailed Sales Report page here if you have one #}
-        {% if url_for('sales_report', _external=False) is defined %}
-        <a href="{{ url_for('sales_report') }}" class="btn btn-info">View Sales Summary</a>
-        {% endif %}
+        <a href="{{ url_for('sales_report') }}" class="btn btn-secondary">View Sales Report & Summary →</a>
     </div>
 
     {% if cars %}
@@ -24,27 +27,27 @@
                     <th>Year</th>
                     <th>Make</th>
                     <th>Model</th>
+                    <th>Sale Price</th>
                     <th>VIN</th>
-                    <th>Price Sold</th>
                 </tr>
             </thead>
             <tbody>
                 {% for car in cars %}
                 <tr>
-                    {# FIX: Added the Sale Date column, assuming the sold car object has a 'sale_date' attribute (which is required by the sell_car logic) #}
-                    <td>{{ car.sale_date.strftime('%Y-%m-%d') if car.sale_date else 'N/A' }}</td>
+                    <td>{{ car.sale_date.split('T')[0] if car.sale_date else 'N/A' }}</td>
                     <td>{{ car.year }}</td>
                     <td>{{ car.make }}</td>
                     <td>{{ car.model }}</td>
-                    <td>{{ car.vin }}</td>
                     <td class="price">${{ "{:,.2f}".format(car.price) }}</td>
+                    <td>{{ car.vin }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     {% else %}
-        <p class="alert alert-info" style="font-size: 1.1em;">
-            The sales history is currently empty. No cars have been marked as sold yet!
+        <p class="alert alert-info">
+            The sold vehicle history is currently empty.
         </p>
     {% endif %}
+
 {% endblock %}
