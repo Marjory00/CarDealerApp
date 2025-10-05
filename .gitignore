@@ -16,6 +16,7 @@ venv/
 # 2. APPLICATION DATA
 # ------------------------------------
 # Data file (keep local test data off GitHub)
+# Core application logic files omitted for portfolio purposes
 # This prevents your dealer inventory data from being committed.
 cars.json
 web_app.py
