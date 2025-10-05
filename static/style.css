@@ -328,11 +328,24 @@ a:hover {
 }
 
 .btn-secondary {
-    background-color: #6c757d;
+    background-color: #325ea0;
+     /* Removes the underline from the link text */
+    text-decoration: none; 
     color: white;
+
+      /* Optional: Add padding/border if it's meant to look like a button */
+    padding: 8px 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    display: inline-block;
 }
-.btn-secondary:hover {
-    background-color: #5a6268;
+.btn-secondary:hover,
+.btn-secondary:focus {
+    /* Optional: Slight background change on hover for visual feedback */
+    background-color: #2798f5;
+     /* Removes the underline from the link text */
+    text-decoration: none; 
+    color: white;
 }
 
 .form-actions, .action-buttons {
@@ -384,11 +397,35 @@ a:hover {
 
 
 /* === FOOTER === */
+
 .footer {
-    background-color: #343a40; 
-    color: #f8f9fa; 
-    text-align: center;
-    padding: 20px 0;
-    font-size: 0.9em;
-    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+    /* 1. Background and Color (Matching the Header's Dark Theme) */
+    background-color: #343a40; /* Dark gray, typically matching a dark navbar (bg-dark in Bootstrap) */
+    color: #ffffff; /* White text for contrast */
+    
+    /* 2. Layout and Spacing */
+    text-align: center; /* Center the copyright and contact info */
+    padding: 20px 0; /* Add vertical padding to make the footer taller */
+    width: 100%; /* Ensure it spans the full width */
+    
+    /* 3. Font Styling */
+    font-size: 0.9em; /* Slightly smaller font size for the footer text */
+    border-top: 3px solid #ffc107; /* Optional: Use the accent color from the header title */
+}
+
+/* Style for the contact email to slightly stand out */
+.footer-contact {
+    margin-top: 5px;
+    font-size: 0.85em;
+    color: #cccccc; /* Slightly muted white/light gray */
+}
+
+/* Style for links within the footer (if any, although your current structure doesn't show them) */
+.footer a {
+    color: #ffc107; /* Use the accent color for any footer links */
+    text-decoration: none;
+}
+
+.footer a:hover {
+    text-decoration: underline;
 }
