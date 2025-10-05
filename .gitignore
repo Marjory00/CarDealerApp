@@ -36,6 +36,7 @@ config_local.py
 # secrets.py (PROTECTED)
 FLASK_SECRET_KEY = 'your_strong_secret_key'
 
+app_secrets.py
 # ------------------------------------
 # 3. EDITOR/IDE FILES
 # ------------------------------------
