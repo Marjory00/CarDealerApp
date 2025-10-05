@@ -22,6 +22,9 @@ web_app.py
 add_car.html
 main.py
 app.py
+dealer_manager.py
+dealer.app.py
+
 
 # If you use a separate file for your Flask secret key or database connection strings
 # app_secrets.py
